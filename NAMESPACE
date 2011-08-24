@@ -1,0 +1,4 @@
+
+useDynLib(RVowpalWabbit)
+
+exportPattern("^[[:alpha:]]+")

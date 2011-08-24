@@ -1,0 +1,97 @@
+# RVowpalWabbit configure.in by Dirk Eddelbuettel <edd@debian.org>
+#
+# Borrowing code from the configure.in script in RQuantLib
+#
+# $Id$
+
+# require at least autoconf 2.50
+AC_PREREQ(2.50)
+
+# Process this file with autoconf to produce a configure script.
+AC_INIT(RVowpalWabbit, 0.0.1)
+
+# We are using C++
+AC_LANG(C++)
+AC_REQUIRE_CPP
+
+# Check of R
+AC_DEFUN(AC_PROG_R, [AC_CHECK_PROG(R,R,yes)])
+AC_PROG_R
+
+# Next segment by Kurt, and once contributed to RQuantLib
+: ${R_HOME=`R RHOME`}
+if test -z "${R_HOME}"; then
+    AC_MSG_ERROR([Could not determine R_HOME.])   
+fi
+CXX=`${R_HOME}/bin/R CMD config CXX`
+CXXFLAGS=`"${R_HOME}/bin/R" CMD config CXXFLAGS`
+
+## look for Rscript, but use the one found via R_HOME to allow for multiple installations
+AC_DEFUN(AC_PROG_RSCRIPT, [AC_CHECK_PROG(RSCRIPT,Rscript,yes)])
+AC_PROG_RSCRIPT
+#AC_MSG_CHECKING([for Rscript])
+if test x"${RSCRIPT}" == x"yes" ; then
+#     AC_MSG_RESULT([yes])    
+     ## link flag providing libary as well as path to library, and optionally rpath
+     rcpp_ldflags=`${R_HOME}/bin/Rscript -e 'Rcpp:::LdFlags()'`
+     ## now use all these
+     AC_SUBST([LDFLAGS],["${LDFLAGS} $rcpp_ldflags"])
+else
+#    AC_MSG_RESULT([no])    
+    echo "
+  Your installation does not appear to have Rscript installed.
+
+  Please make sure that you have a working and complete R installation.
+"
+    exit 1
+fi
+
+## check for boost, this segment as well as segment below are 
+## from QuantLib's configure.ac
+## 
+##
+## Help the compiler find external software
+AC_ARG_WITH([boost-include],
+            AC_HELP_STRING([--with-boost-include=INCLUDE_PATH],
+                           [Supply the location of Boost header files]),
+            [ql_boost_include_path=$withval],
+            [ql_boost_include_path=""])
+if test [ -n "$ql_boost_include_path" ] ; then
+   AC_SUBST([CXXFLAGS],["${CXXFLAGS} -I${ql_boost_include_path}"])
+fi
+AC_ARG_WITH([boost-lib],
+            AC_HELP_STRING([--with-boost-lib=LIB_PATH],
+                           [Supply the location of Boost libraries]),
+            [ql_boost_lib_path=$withval],
+            [ql_boost_lib_path=""])
+if test [ -n "$ql_boost_lib_path" ] ; then
+   AC_SUBST([LDFLAGS],["${LDFLAGS} -L${ql_boost_lib_path} -lboost_program_options"])
+fi
+
+
+## if it is g++, do some putzing with args
+AC_PROG_CXX
+if test "${GXX}" = yes; then
+    gxx_version=`${CXX} -v 2>&1 | grep "^.*g.. version" | \\
+		       sed -e 's/^.*g.. version *//'`
+    case ${gxx_version} in
+        1.*|2.*|3.*|4.0|4.1)
+	     AC_MSG_WARN([Only g++ version 4.2 or greater can be used with Rcpp / RVowpalWabbit.])
+	     AC_MSG_ERROR([Please use a different compiler.])   
+        ;;
+    esac
+    ## these flags are used upstream by Vowpal Wabbit; CRAN does not want them unconditionally in src/Makevars
+    AC_SUBST([CXXFLAGS],["${CXXFLAGS} -g0 -march=nocona -Wall -O3 -fomit-frame-pointer -ffast-math -fno-strict-aliasing"])
+fi
+
+AC_SUBST(CXXFLAGS)
+AC_SUBST(LDFLAGS)
+AC_OUTPUT(src/Makevars)
+echo "Completed configuration and ready to build."
+
+### Local Variables: ***
+### mode: autoconf ***
+### autoconf-indentation: 4 ***
+### End: ***
+
+

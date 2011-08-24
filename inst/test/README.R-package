@@ -1,0 +1,9 @@
+
+All other files in this directory come directly from the github source for
+vowpal wabbit and permit us to test the accurracy of the R implementation.
+
+RunTests is hence not meant to be used directly as this package does not
+provide a standalone 'vw' binary.  It is however the source for the tests run
+by demo("vw").
+
+ -- Dirk Eddelbuettel, 18 Aug 2011

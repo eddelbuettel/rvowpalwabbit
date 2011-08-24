@@ -1,0 +1,4 @@
+
+rm -f src/*.o src/*.so \
+      *~ \
+      config.log config.status

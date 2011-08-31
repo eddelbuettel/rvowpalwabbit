@@ -1,3 +1,7 @@
+2011-08-31  Dirk Eddelbuettel  <edd@debian.org>
+
+	* src/*: Updated to current version of vowpal's git repo
+
 2011-08-18  Dirk Eddelbuettel  <edd@debian.org>
 
 	* man/vw.Rd: Added minimal manual page for vw() function

@@ -1,5 +1,9 @@
 2011-08-31  Dirk Eddelbuettel  <edd@debian.org>
 
+        * DESCRIPTION: Set Version: to 0.0.2 for initial CRAN upload
+
+	* DESCRIPTION: Set SVN $Date$ property
+
 	* src/*: Updated to current version of vowpal's git repo
 
 2011-08-18  Dirk Eddelbuettel  <edd@debian.org>

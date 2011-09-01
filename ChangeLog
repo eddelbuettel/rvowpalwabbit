@@ -1,5 +1,8 @@
 2011-09-01  Dirk Eddelbuettel  <edd@debian.org>
 
+	* src/*: Updated to current version of vowpal's git repo which now
+	compiles cleanly using -std=c++0x
+
 	* configure.in: Added more stringent test for Boost Program_Options
 	library re-using two macros by Thomas Porschberg from the autoconf
 	archive.

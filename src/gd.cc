@@ -26,6 +26,8 @@ embodied in the content of this file are licensed under the BSD
 #include "allreduce.h"
 #include "accumulate.h"
 
+using namespace std;
+
 void adaptive_inline_train(regressor &reg, example* &ec, size_t thread_num, float update);
 
 void* gd_thread(void *in)
@@ -47,6 +49,7 @@ void* gd_thread(void *in)
 	    {
 	      global.eta *= global.eta_decay_rate;
 	      current_pass = ec->pass;
+	      save_predictor(*(params->final_regressor_name), current_pass);
 	    }
 	  if (global.adaptive)
 	    adaptive_inline_train(reg,ec,thread_num, ec->eta_round);

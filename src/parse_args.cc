@@ -15,6 +15,7 @@ embodied in the content of this file are licensed under the BSD
 #include "network.h"
 #include "global_data.h"
 
+using namespace std;
 //
 // Does string end with a certain substring?
 //
@@ -103,6 +104,7 @@ po::variables_map parse_args(int argc, char *argv[], boost::program_options::opt
     ("random_weights", po::value<bool>(&global.random_weights), "make initial weights random")
     ("raw_predictions,r", po::value< string >(),
      "File to output unnormalized predictions to")
+    ("save_per_pass", "Save the model after every pass over data")
     ("sendto", po::value< vector<string> >(), "send example to <hosts>")
     ("testonly,t", "Ignore label information and just test")
     ("thread_bits", po::value<size_t>(&global.thread_bits)->default_value(0), "log_2 threads")
@@ -154,6 +156,7 @@ po::variables_map parse_args(int argc, char *argv[], boost::program_options::opt
   global.active_simulation =false;
   global.reg = &r;
 
+  global.save_per_pass = false;
 
   po::positional_options_description p;
   // Be friendly: if -d was left out, treat positional param as data file
@@ -162,6 +165,7 @@ po::variables_map parse_args(int argc, char *argv[], boost::program_options::opt
   po::variables_map vm;
 
   po::store(po::command_line_parser(argc, argv).
+	    style(po::command_line_style::default_style ^ po::command_line_style::allow_guessing).
 	    options(desc).positional(p).run(), vm);
   po::notify(vm);
 
@@ -386,7 +390,10 @@ po::variables_map parse_args(int argc, char *argv[], boost::program_options::opt
   parse_source_args(vm,par,global.quiet,global.numpasses);
   if (vm.count("readable_model"))
     global.text_regressor_name = vm["readable_model"].as<string>();
-
+  
+  if (vm.count("active_c0"))
+    global.active_c0 = vm["active_c0"].as<float>();
+  
   if (vm.count("active_c0"))
     global.active_c0 = vm["active_c0"].as<float>();
 
@@ -477,6 +484,8 @@ po::variables_map parse_args(int argc, char *argv[], boost::program_options::opt
       if (!global.quiet)
 	cerr << "only testing" << endl;
       global.training = false;
+      if (global.lda > 0)
+        global.eta = 0;
     }
   else
     {

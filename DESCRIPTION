@@ -21,7 +21,7 @@ Description: R interface to Vowpal Wabbit fast out-of-core learning system
  library, which is often installed by default.
 Depends: R (>= 2.12.0), Rcpp (>= 0.9.6)
 LinkingTo: Rcpp
-SystemRequirements: Boost library from http://www.boost.org
+SystemRequirements: The Boost 'program_options' library (http://boost.org) is required.
 OS_type: unix
 License: GPL (>= 2)
 URL: https://github.com/JohnLangford/vowpal_wabbit/ http://dirk.eddelbuettel.com/code/rcpp.html

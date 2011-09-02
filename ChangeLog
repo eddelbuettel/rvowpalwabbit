@@ -1,3 +1,9 @@
+2011-09-02  Dirk Eddelbuettel  <edd@debian.org>
+
+	* src/Makevars.in: Also set -lz -lpthread in PKG_LIBS
+
+	* cleanup: Remove src/Makevars too
+
 2011-09-01  Dirk Eddelbuettel  <edd@debian.org>
 
 	* src/*: Updated to current version of vowpal's git repo which now

@@ -1,5 +1,5 @@
 PKG_CXXFLAGS=@CXXFLAGS@ -I. -D_FILE_OFFSET_BITS=64 
-PKG_LIBS=@LDFLAGS@ 
+PKG_LIBS=@LDFLAGS@ -lz -lpthread
 
 #CXXFLAGS=  -g0 -O3 -Wall -pipe -Wno-variadic-macros  #-pedantic 
 

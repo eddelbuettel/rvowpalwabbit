@@ -3817,7 +3817,7 @@ $as_echo "$as_me: WARNING: Only g++ version 4.2 or greater can be used with Rcpp
         ;;
     esac
     ## these flags are used upstream by Vowpal Wabbit; CRAN does not want them unconditionally in src/Makevars
-    CXXFLAGS="${CXXFLAGS} -g0 -std=c++0x -march=nocona -Wall -O3 -fomit-frame-pointer -ffast-math -fno-strict-aliasing"
+    CXXFLAGS="${CXXFLAGS} -g0 -march=nocona -Wall -O3 -fomit-frame-pointer -ffast-math -fno-strict-aliasing"
 
 fi
 

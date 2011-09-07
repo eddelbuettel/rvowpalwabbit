@@ -7,6 +7,7 @@ embodied in the content of this file are licensed under the BSD
 #ifndef GLOBAL_DATA_H
 #define GLOBAL_DATA_H
 #include <vector>
+#include <stdint.h>
 #include "v_array.h"
 #include "parse_regressor.h"
 
@@ -81,7 +82,7 @@ struct global_data {
 
   std::string text_regressor_name;
   
-  std::string master_location;
+  std::string span_server;
 
   size_t num_threads () { return 1 << thread_bits; };
   size_t num_partitions () { return 1 << partition_bits; };
@@ -94,6 +95,8 @@ struct global_data {
   int raw_prediction; // file descriptors for text output.
   int local_prediction;  //file descriptor to send local prediction to.
   size_t unique_id; //unique id for each node in the network, id == 0 means extra io.
+  size_t total; //total number of nodes
+  size_t node; //node id number
 
   void (*print)(int,float,float,v_array<char>);
   loss_function* loss;
@@ -101,13 +104,13 @@ struct global_data {
   char* program_name;
 
   //runtime accounting variables. 
-  unsigned long long example_number;
+  uint64_t example_number;
   double initial_t;
   double weighted_examples;
   double weighted_unlabeled_examples;
   double old_weighted_examples;
   double weighted_labels;
-  size_t total_features;
+  uint64_t total_features;
   double sum_loss;
   double sum_loss_since_last_dump;
   float dump_interval;// when should I update for the user.

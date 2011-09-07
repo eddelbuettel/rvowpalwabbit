@@ -439,7 +439,7 @@ if test "${GXX}" = yes; then
         ;;
     esac
     ## these flags are used upstream by Vowpal Wabbit; CRAN does not want them unconditionally in src/Makevars
-    AC_SUBST([CXXFLAGS],["${CXXFLAGS} -g0 -std=c++0x -march=nocona -Wall -O3 -fomit-frame-pointer -ffast-math -fno-strict-aliasing"])
+    AC_SUBST([CXXFLAGS],["${CXXFLAGS} -g0 -march=nocona -Wall -O3 -fomit-frame-pointer -ffast-math -fno-strict-aliasing"])
 fi
 
 AC_SUBST([CXXFLAGS],["${BOOST_CPPFLAGS} ${CXXFLAGS}"])

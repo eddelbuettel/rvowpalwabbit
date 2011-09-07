@@ -48,8 +48,8 @@ void* gd_thread(void *in)
 	  if (ec->pass != current_pass)
 	    {
 	      global.eta *= global.eta_decay_rate;
-	      current_pass = ec->pass;
 	      save_predictor(*(params->final_regressor_name), current_pass);
+	      current_pass = ec->pass;
 	    }
 	  if (global.adaptive)
 	    adaptive_inline_train(reg,ec,thread_num, ec->eta_round);
@@ -61,14 +61,14 @@ void* gd_thread(void *in)
 	{
 	  assert(ec->in_use);
 
-	  if (ec->pass != current_pass && global.master_location != "")
+	  if (ec->pass != current_pass && global.span_server != "")
 	    {
-	      if(global.master_location != "") {
+	      if(global.span_server != "") {
 		if(global.adaptive)
 		  //accumulate_avg(*(params->socks), params->reg, 0);	      
-		  accumulate_weighted_avg(global.master_location, params->reg);
+		  accumulate_weighted_avg(global.span_server, params->reg);
 		else 
-		  accumulate_avg(global.master_location, params->reg, 0);	      
+		  accumulate_avg(global.span_server, params->reg, 0);	      
 	      }
 	    }
 
@@ -90,12 +90,12 @@ void* gd_thread(void *in)
 	      for(uint32_t i = 0; i < length; i++)
 		reg.weight_vectors[0][stride*i] = real_weight(reg.weight_vectors[0][stride*i],gravity);
 	    }
-	  if(global.master_location != "") {
+	  if(global.span_server != "") {
 	    if(global.adaptive)
 	      //  accumulate_avg(*(params->socks), params->reg, 0);	      
-	      accumulate_weighted_avg(global.master_location, params->reg);
+	      accumulate_weighted_avg(global.span_server, params->reg);
 	    else 
-	      accumulate_avg(global.master_location, params->reg, 0);	      
+	      accumulate_avg(global.span_server, params->reg, 0);	      
 	  }
 	  if (global.local_prediction > 0)
 	    shutdown(global.local_prediction, SHUT_WR);
@@ -130,7 +130,7 @@ bool command_example(example* ec, gd_thread_params* params) {
 
 float finalize_prediction(float ret) 
 {
-  if (isnan(ret))
+  if ( (::isnan)(ret))
     return 0.5;
   if ( ret > global.max_label )
     return global.max_label;
@@ -164,7 +164,7 @@ void print_update(example *ec)
       else
 	sprintf(label_buf,"%8.4f",ld->label);
 
-      fprintf(stderr, "%-10.6f %-10.6f %8lld %8.1f   %s %8.4f %8lu\n",
+      fprintf(stderr, "%-10.6f %-10.6f %8ld %8.1f   %s %8.4f %8lu\n",
 	      global.sum_loss/global.weighted_examples,
 	      global.sum_loss_since_last_dump / (global.weighted_examples - global.old_weighted_examples),
 	      global.example_number,

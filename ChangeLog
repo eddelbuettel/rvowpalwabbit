@@ -1,3 +1,12 @@
+2011-09-07  Dirk Eddelbuettel  <edd@debian.org>
+
+	* Initial CRAN upload with version 0.0.2
+
+	* src/*: Updated to current version of vowpal's git repo which no
+	longer requires -std=c++0x (via uint64_t instead of u. long long)
+
+	* configure.in: Updated to no longer add -std=c++0x
+
 2011-09-02  Dirk Eddelbuettel  <edd@debian.org>
 
 	* src/Makevars.in: Also set -lz -lpthread in PKG_LIBS

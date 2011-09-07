@@ -81,7 +81,7 @@ po::variables_map parse_args(int argc, char *argv[], boost::program_options::opt
     ("lda_rho", po::value<float>(&global.lda_rho)->default_value(0.1), "Prior on sparsity of topic distributions")
     ("lda_D", po::value<float>(&global.lda_D)->default_value(10000.), "Number of documents")
     ("minibatch", po::value<size_t>(&global.minibatch)->default_value(1), "Minibatch size, for LDA")
-    ("master_location", po::value<string>(&global.master_location)->default_value(""), "Location of master for setting up spanning tree")
+    ("span_server", po::value<string>(&global.span_server)->default_value(""), "Location of server for setting up spanning tree")
     ("min_prediction", po::value<double>(&global.min_label), "Smallest prediction to output")
     ("max_prediction", po::value<double>(&global.max_label), "Largest prediction to output")
     ("mem", po::value<int>(&global.m)->default_value(15), "memory in bfgs")
@@ -110,7 +110,11 @@ po::variables_map parse_args(int argc, char *argv[], boost::program_options::opt
     ("thread_bits", po::value<size_t>(&global.thread_bits)->default_value(0), "log_2 threads")
     ("loss_function", po::value<string>()->default_value("squared"), "Specify the loss function to be used, uses squared by default. Currently available ones are squared, classic, hinge, logistic and quantile.")
     ("quantile_tau", po::value<double>()->default_value(0.5), "Parameter \\tau associated with Quantile loss. Defaults to 0.5")
-    ("unique_id", po::value<size_t>(&global.unique_id)->default_value(((size_t)0)-1),"unique id used for cluster parallel")
+
+    ("unique_id", po::value<size_t>(&global.unique_id)->default_value(0),"unique id used for cluster parallel")
+    ("total", po::value<size_t>(&global.total)->default_value(1),"total number of nodes used in cluster parallel")    
+    ("node", po::value<size_t>(&global.node)->default_value(0),"node number used for cluster parallel")    
+
     ("sort_features", "turn this on to disregard order in which features have been defined. This will lead to smaller cache sizes")
     ("ngram", po::value<size_t>(), "Generate N grams")
     ("skips", po::value<size_t>(), "Generate skips in N grams. This in conjunction with the ngram tag can be used to generate generalized n-skip-k-gram.");
@@ -394,8 +398,8 @@ po::variables_map parse_args(int argc, char *argv[], boost::program_options::opt
   if (vm.count("active_c0"))
     global.active_c0 = vm["active_c0"].as<float>();
   
-  if (vm.count("active_c0"))
-    global.active_c0 = vm["active_c0"].as<float>();
+  if (vm.count("save_per_pass"))
+    global.save_per_pass = true;
 
   if (vm.count("min_prediction"))
     global.min_label = vm["min_prediction"].as<double>();

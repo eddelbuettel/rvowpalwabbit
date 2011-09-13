@@ -31,6 +31,21 @@ vw(args, quiet=TRUE)
   application. Some documentation for it is provided via the upstream
   wiki referenced below.
 }
+\note{The \pkg{RVowpalWabbit} package contains the original test and
+  validattion data, models, and output. In order to call the \code{vw}
+  function with relative path names (as in the Vowpal Wabbit
+  documentation), it is easiest to first change to a directory above all
+  these files as for example via
+
+  \preformatted{
+    ## change to 'test' directory of package
+    setwd( system.file("test", package="RVowpalWabbit") )
+  }
+
+  which computes where the package is installed, and then adds the
+  \code{test} directory to that path before changing to working
+  directory to the resulting path.
+}
 \references{
   \url{https://github.com/JohnLangford/vowpal_wabbit/wiki}
 }

@@ -1,6 +1,11 @@
-2011-09-07  Dirk Eddelbuettel  <edd@debian.org>
+2011-09-12  Dirk Eddelbuettel  <edd@debian.org>
 
-	* Initial CRAN upload with version 0.0.2
+	* src/R_vw.cpp: Wrap a try/catch block around main function
+
+	* man/vw.Rd: Added a \note{} about the need to setwd() accordingly if
+	relative paths are used
+
+2011-09-07  Dirk Eddelbuettel  <edd@debian.org>
 
 	* src/*: Updated to current version of vowpal's git repo which no
 	longer requires -std=c++0x (via uint64_t instead of u. long long)
@@ -24,7 +29,7 @@
 
 2011-08-31  Dirk Eddelbuettel  <edd@debian.org>
 
-        * DESCRIPTION: Set Version: to 0.0.2 for initial CRAN upload
+        * DESCRIPTION: Set Version: to 0.0.2
 
 	* DESCRIPTION: Set SVN $Date$ property
 

@@ -1,3 +1,14 @@
+2011-09-20  Dirk Eddelbuettel  <edd@debian.org>
+
+        * DESCRIPTION: Set Version: to 0.0.3
+
+	* src/*: Updated to current version of vowpal's git repo which
+	compiles cleanly under -pedantic too (with thanks to John et al)
+
+	* configure.in: Better gcc version test to decide when to use
+	-march=native (on 4.3 or later) borrowing line from John 
+
+
 2011-09-12  Dirk Eddelbuettel  <edd@debian.org>
 
 	* src/R_vw.cpp: Wrap a try/catch block around main function

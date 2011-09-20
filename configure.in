@@ -9,7 +9,7 @@
 AC_PREREQ(2.50)
 
 # Process this file with autoconf to produce a configure script.
-AC_INIT(RVowpalWabbit, 0.0.2)
+AC_INIT(RVowpalWabbit, 0.0.3)
 
 # We are using C++ (commented out now as also done below by Boost tests)
 #AC_LANG(C++)
@@ -430,16 +430,23 @@ fi
 ## if it is g++, do some putzing with args
 AC_PROG_CXX
 if test "${GXX}" = yes; then
-    gxx_version=`${CXX} -v 2>&1 | grep "^.*g.. version" | \\
-		       sed -e 's/^.*g.. version *//'`
+    gxx_version=`${CXX} -v 2>&1 | tail -1 | cut -d ' ' -f 3 | cut -d '.' -f 1,2`
     case ${gxx_version} in
         1.*|2.*|3.*|4.0|4.1)
 	     AC_MSG_WARN([Only g++ version 4.2 or greater can be used with Rcpp / RVowpalWabbit.])
 	     AC_MSG_ERROR([Please use a different compiler.])   
         ;;
-    esac
+	4.2)
+             ## gcc/g++-4.2 cannot do -march=native
+             MARCH_FLAG="-march=nocona"
+        ;;
+	4.3|4.4|4.5|4.6|4.7|4.8|4.9|5.*)
+             ## use -march=native where we can
+             MARCH_FLAG="-march=native"
+        ;;
+	esac
     ## these flags are used upstream by Vowpal Wabbit; CRAN does not want them unconditionally in src/Makevars
-    AC_SUBST([CXXFLAGS],["${CXXFLAGS} -g0 -march=nocona -Wall -O3 -fomit-frame-pointer -ffast-math -fno-strict-aliasing"])
+    AC_SUBST([CXXFLAGS],["${CXXFLAGS} -g0 ${MARCH_FLAG} -Wall -O3 -fomit-frame-pointer -ffast-math -fno-strict-aliasing"])
 fi
 
 AC_SUBST([CXXFLAGS],["${BOOST_CPPFLAGS} ${CXXFLAGS}"])

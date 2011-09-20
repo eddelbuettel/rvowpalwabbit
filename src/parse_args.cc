@@ -28,6 +28,16 @@ bool ends_with(string const &fullString, string const &ending)
     }
 }
 
+size_t next_pow2(size_t x) {
+  int i = 0;
+  x = x > 0 ? x - 1 : 0;
+  while (x > 0) {
+    x >>= 1;
+    i++;
+  }
+  return 1 << i;
+}
+
 const float default_decay = 1.;
 
 po::variables_map parse_args(int argc, char *argv[], boost::program_options::options_description& desc,
@@ -53,7 +63,7 @@ po::variables_map parse_args(int argc, char *argv[], boost::program_options::opt
     ("cache_file", po::value< vector<string> >(), "The location(s) of cache_file.")
     ("compressed", "use gzip format whenever appropriate. If a cache file is being created, this option creates a compressed cache file. A mixture of raw-text & compressed inputs are supported if this option is on")
     ("conjugate_gradient", "use conjugate gradient based optimization")
-    ("regularization", po::value<float>(&global.regularization)->default_value(1.0), "l_2 regularization for conjugate_gradient")
+    ("regularization", po::value<float>(&global.regularization)->default_value(1.0), "l_2 regularization for bfgs")
     ("corrective", "turn on corrective updates")
     ("data,d", po::value< string >()->default_value(""), "Example Set")
     ("daemon", "read data from port 26542")
@@ -86,6 +96,7 @@ po::variables_map parse_args(int argc, char *argv[], boost::program_options::opt
     ("max_prediction", po::value<double>(&global.max_label), "Largest prediction to output")
     ("mem", po::value<int>(&global.m)->default_value(15), "memory in bfgs")
     ("multisource", po::value<size_t>(), "multiple sources for daemon input")
+    ("noconstant", "Don't add a constant feature")
     ("noop","do no learning")
     ("output_feature_regularizer_binary", po::value< string >(&global.per_feature_regularizer_output), "Per feature regularization output file")
     ("output_feature_regularizer_text", po::value< string >(&global.per_feature_regularizer_text), "Per feature regularization output file, in text")
@@ -128,7 +139,6 @@ po::variables_map parse_args(int argc, char *argv[], boost::program_options::opt
   global.bfgs = false;
   global.corrective = false;
   global.delayed_global = false;
-  global.conjugate_gradient = false;
   global.bfgs = false;
   global.hessian_on = false;
   global.stride = 1;
@@ -147,13 +157,15 @@ po::variables_map parse_args(int argc, char *argv[], boost::program_options::opt
   global.min_label = 0.;
   global.max_label = 1.;
   global.update_sum = 0.;
-  global.lda =0;
+  global.lda = 0;
   global.random_weights = false;
   global.per_feature_regularizer_input = "";
   global.per_feature_regularizer_output = "";
   global.per_feature_regularizer_text = "";
+  global.ring_size = 1 << 8;
 
   global.adaptive = false;
+  global.add_constant = true;
   global.exact_adaptive_norm = false;
   global.audit = false;
   global.active = false;
@@ -221,43 +233,26 @@ po::variables_map parse_args(int argc, char *argv[], boost::program_options::opt
       global.delayed_global = true;
       cout << "enabling delayed_global updates" << endl;
   }
-
-  if (vm.count("conjugate_gradient")) {
-    global.conjugate_gradient = true;
-    global.stride = 4;
-    if (!global.quiet)
-      cerr << "enabling conjugate gradient based optimization" << endl;
-    if (global.numpasses < 2)
-      {
-	cout << "you must make at least 2 passes to use conjugate gradient" << endl;
-	exit(1);
-      }
-  }
-
-  if (vm.count("bfgs")) {
+  
+  if (vm.count("bfgs") || vm.count("conjugate_gradient")) {
     global.bfgs = true;
     global.stride = 4;
-    if (vm.count("hessian_on")) {
+    if (vm.count("hessian_on") || global.m==0) {
       global.hessian_on = true;
     }
     if (!global.quiet) {
-       if (global.m>0)
-	 cerr << "enabling BFGS based optimization ";
-       else
-	 cerr << "enabling conjugate gradient optimization via BFGS ";
-       if (global.hessian_on)
-	 cerr << "with curvature calculation" << endl;
-       else
-	 cerr << "**without** curvature calculation" << endl;
+      if (global.m>0)
+	cerr << "enabling BFGS based optimization ";
+      else
+	cerr << "enabling conjugate gradient optimization via BFGS ";
+      if (global.hessian_on)
+	cerr << "with curvature calculation" << endl;
+      else
+	cerr << "**without** curvature calculation" << endl;
     }
     if (global.numpasses < 2)
       {
 	cout << "you must make at least 2 passes to use BFGS" << endl;
-	exit(1);
-      }
-    if (global.conjugate_gradient)
-      {
-	cout << "you cannot enable both conjugate gradient and BFGS" << endl;
 	exit(1);
       }
   }
@@ -374,12 +369,16 @@ po::variables_map parse_args(int argc, char *argv[], boost::program_options::opt
     global.random_weights = true;
   }
 
+  if (vm.count("noconstant"))
+    global.add_constant = false;
+
   if (vm.count("lda"))
     {
       par->sort_features = true;
       float temp = ceilf(logf((float)(global.lda*2+1)) / logf (2.f));
       global.stride = 1 << (int) temp;
       global.random_weights = true;
+      global.add_constant = false;
     }
 
   if (vm.count("lda") && global.eta > 1.)
@@ -387,8 +386,13 @@ po::variables_map parse_args(int argc, char *argv[], boost::program_options::opt
       cerr << "your learning rate is too high, setting it to 1" << endl;
       global.eta = min(global.eta,1.f);
     }
-  if (!vm.count("lda"))
+  if (!vm.count("lda")) 
     global.eta *= pow(par->t, vars.power_t);
+
+  if (vm.count("minibatch")) {
+    size_t minibatch2 = next_pow2(global.minibatch);
+    global.ring_size = global.ring_size > minibatch2 ? global.ring_size : minibatch2;
+  }
   
   parse_regressor_args(vm, r, final_regressor_name, global.quiet);
   parse_source_args(vm,par,global.quiet,global.numpasses);
@@ -447,7 +451,7 @@ po::variables_map parse_args(int argc, char *argv[], boost::program_options::opt
 	cerr << "decay_learning_rate = " << global.eta_decay_rate << endl;
       if (global.rank > 0)
 	cerr << "rank = " << global.rank << endl;
-      if (global.regularization > 0 && (global.conjugate_gradient || global.bfgs))
+      if (global.regularization > 0 && global.bfgs)
 	cerr << "regularization = " << global.regularization << endl;
     }
 

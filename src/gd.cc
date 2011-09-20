@@ -155,7 +155,7 @@ void finish_example(example* ec)
 
 void print_update(example *ec)
 {
-  if (global.weighted_examples > global.dump_interval && !global.quiet && !global.conjugate_gradient && !global.bfgs)
+  if (global.weighted_examples > global.dump_interval && !global.quiet && !global.bfgs)
     {
       label_data* ld = (label_data*) ec->ld;
       char label_buf[32];
@@ -167,7 +167,7 @@ void print_update(example *ec)
       fprintf(stderr, "%-10.6f %-10.6f %8ld %8.1f   %s %8.4f %8lu\n",
 	      global.sum_loss/global.weighted_examples,
 	      global.sum_loss_since_last_dump / (global.weighted_examples - global.old_weighted_examples),
-	      global.example_number,
+	      (long int)global.example_number,
 	      global.weighted_examples,
 	      label_buf,
 	      ec->final_prediction,
@@ -727,7 +727,7 @@ void local_predict(example* ec, gd_vars& vars, regressor& reg, size_t thread_num
       send_prediction(global.local_prediction, pred);
       if (global.unique_id == 0)
 	{
-	  size_t len = sizeof(ld->label) + sizeof(ld->weight);
+	  const size_t len = sizeof(ld->label) + sizeof(ld->weight);
 	  char c[len];
 	  bufcache_simple_label(ld,c);
 	  if (write(global.local_prediction,c,len) < (int)len)

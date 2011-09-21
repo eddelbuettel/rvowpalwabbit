@@ -1,3 +1,8 @@
+2011-09-21  Dirk Eddelbuettel  <edd@debian.org>
+
+	* configure.in: Also look for dylib versions of the
+	Boost.Program_Options library to better support OS X
+
 2011-09-20  Dirk Eddelbuettel  <edd@debian.org>
 
         * DESCRIPTION: Set Version: to 0.0.3
@@ -6,7 +11,7 @@
 	compiles cleanly under -pedantic too (with thanks to John et al)
 
 	* configure.in: Better gcc version test to decide when to use
-	-march=native (on 4.3 or later) borrowing line from John 
+	-march=native (on 4.3 or later) borrowing line from John
 
 
 2011-09-12  Dirk Eddelbuettel  <edd@debian.org>

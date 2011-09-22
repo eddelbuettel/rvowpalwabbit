@@ -23,9 +23,6 @@ Implementation by Miro Dudik.
 #include "delay_ring.h"
 #include "accumulate.h"
 
-#include <boost/math/special_functions/fpclassify.hpp> // isnan
-using boost::math::isnan;
-
 using namespace std;
 
 #define CG_EXTRA 1

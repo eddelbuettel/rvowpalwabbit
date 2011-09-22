@@ -17,4 +17,8 @@ embodied in the content of this file are licensed under the BSD
 int read_features(parser* p, void* ex);
 hash_func_t getHasher(const std::string& s);
 
+// use the isnan macro from Boost which falls back to C99
+#include <boost/math/special_functions/fpclassify.hpp> // isnan     
+using boost::math::isnan;
+
 #endif

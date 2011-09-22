@@ -3432,6 +3432,7 @@ else
 fi
 
 			done
+		    fi
                     if test "x$link_program_options" != "xyes"; then
                         for libextension in `ls $BOOSTLIBDIR/boost_program_options*.dll* 2>/dev/null | sed 's,.*/,,' | sed -e 's;^\(boost_program_options.*\)\.dll.*$;\1;'` `ls $BOOSTLIBDIR/boost_program_options*.a* 2>/dev/null | sed 's,.*/,,' | sed -e 's;^\(boost_program_options.*\)\.a*$;\1;'` ; do
                         ax_lib=${libextension}
@@ -3480,6 +3481,7 @@ else
 fi
 
 			done
+		    fi
                     if test "x$link_program_options" != "xyes"; then
                         for libextension in `ls $BOOSTLIBDIR/boost_program_options*.dylib* 2>/dev/null | sed 's,.*/,,' | sed -e 's;^\(boost_program_options.*\)\.dylib.*$;\1;'` `ls $BOOSTLIBDIR/boost_program_options*.a* 2>/dev/null | sed 's,.*/,,' | sed -e 's;^\(boost_program_options.*\)\.a*$;\1;'` ; do
                         ax_lib=${libextension}
@@ -3528,6 +3530,7 @@ else
 fi
 
 			done
+		    fi
             fi
             else
                 for ax_lib in $ax_boost_user_program_options_lib boost_program_options-$ax_boost_user_program_options_lib; do
@@ -3577,10 +3580,10 @@ fi
 	    if test "x$link_program_options" != "xyes"; then
 	        as_fn_error $? "Could not link against $ax_lib !" "$LINENO" 5
 	    fi
-	fi
+
 	CPPFLAGS="$CPPFLAGS_SAVED"
 	LDFLAGS="$LDFLAGS_SAVED"
-    fi
+
 
 
 ## Check that we found a library to link against, or else abort

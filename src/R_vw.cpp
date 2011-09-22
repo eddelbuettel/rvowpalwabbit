@@ -49,7 +49,7 @@ extern "C" SEXP Rvw(SEXP args) {
                                                                                          global.max_label == 1. && 
                                                                                          best_constant < 1. && 
                                                                                                          best_constant > 0.) ? constant_loss : R_NaReal,
-                                                     Rcpp::Named("totalFeatureNumber") = global.total_features,
+                                                     Rcpp::Named("totalFeatureNumber") = static_cast<double>(global.total_features),
                                                      Rcpp::Named("totalQueries") = global.active_simulation ? global.queries : R_NaReal
                                                      );
 

@@ -1,6 +1,6 @@
 Package: RVowpalWabbit
 Title: R interface to the Vowpal Wabbit
-Version: 0.0.3.2
+Version: 0.0.3.3
 Date: $Date$
 Maintainer: Dirk Eddelbuettel <edd@debian.org>
 Author: Dirk Eddelbuettel <edd@debian.org>
@@ -19,6 +19,11 @@ Description: R interface to Vowpal Wabbit fast out-of-core learning system
  sparse gradient descent (GD) on a loss function (several are available). The
  code should be easily usable. Its only external dependence is on the Boost
  library, which is often installed by default.
+ .
+ This R package does not include the distributed computing implementation of
+ the cluster/ directory of the upstream sources.  Use of the software as a
+ network servie is also not directly supported as the aim is a simpler direct
+ call from R for validation and comparison.
 Depends: R (>= 2.12.0), Rcpp (>= 0.9.6)
 LinkingTo: Rcpp
 SystemRequirements: The Boost 'program_options' library (http://boost.org) is required.

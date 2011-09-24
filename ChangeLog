@@ -1,3 +1,7 @@
+2011-09-23  Dirk Eddelbuettel  <edd@debian.org>
+
+	* src/*: Updated to current version of vowpal's git repo
+
 2011-09-22  Dirk Eddelbuettel  <edd@debian.org>
 
 	* src/R_vw.cpp (Rvw): Cast total_features to double
@@ -18,7 +22,6 @@
 
 	* configure.in: Better gcc version test to decide when to use
 	-march=native (on 4.3 or later) borrowing line from John
-
 
 2011-09-12  Dirk Eddelbuettel  <edd@debian.org>
 

@@ -1,10 +1,17 @@
-2011-09-23  Dirk Eddelbuettel  <edd@debian.org>
+2011-09-25  Dirk Eddelbuettel  <edd@debian.org>
+
+        * DESCRIPTION: Set Version: to 0.0.4
 
 	* src/*: Updated to current version of vowpal's git repo
 
+2011-09-23  Dirk Eddelbuettel  <edd@debian.org>
+
+	* src/*: Updated to current version of vowpal's git repo
+	which includes fixes for isnan not compiling on OS X
+
 2011-09-22  Dirk Eddelbuettel  <edd@debian.org>
 
-	* src/R_vw.cpp (Rvw): Cast total_features to double
+	* src/R_vw.cpp: Cast total_features to double
 
 	* configure.in: More cleanup / reindentation
 

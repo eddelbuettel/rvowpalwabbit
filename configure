@@ -2921,20 +2921,8 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
 	    if test "$succeeded" != "yes" ; then
 	        if test "$_version" = "0" ; then
-	            { $as_echo "$as_me:${as_lineno-$LINENO}: We could not detect the boost libraries (version
-	                            $boost_lib_version_req_shorten or higher). If you have a
-	                            staged boost library (still not installed) please specify
-	                            \$BOOST_ROOT in your environment and do not give a PATH
-	                            to --with-boost option.  If you are sure you have boost installed,
-	                            then check your version number looking in <boost/version.hpp>.
-	                            See http://randspringer.de/boost for more documentation." >&5
-$as_echo "$as_me: We could not detect the boost libraries (version
-	                            $boost_lib_version_req_shorten or higher). If you have a
-	                            staged boost library (still not installed) please specify
-	                            \$BOOST_ROOT in your environment and do not give a PATH
-	                            to --with-boost option.  If you are sure you have boost installed,
-	                            then check your version number looking in <boost/version.hpp>.
-	                            See http://randspringer.de/boost for more documentation." >&6;}
+	            { $as_echo "$as_me:${as_lineno-$LINENO}: We could not detect the boost libraries (version $boost_lib_version_req_shorten or higher). If you have a staged boost library (still not installed) please specify \$BOOST_ROOT in your environment and do not give a PATH to --with-boost option.  If you are sure you have boost installed, then check your version number looking in <boost/version.hpp>." >&5
+$as_echo "$as_me: We could not detect the boost libraries (version $boost_lib_version_req_shorten or higher). If you have a staged boost library (still not installed) please specify \$BOOST_ROOT in your environment and do not give a PATH to --with-boost option.  If you are sure you have boost installed, then check your version number looking in <boost/version.hpp>." >&6;}
 	        else
 	            { $as_echo "$as_me:${as_lineno-$LINENO}: Your boost libraries seems to old (version $_version)." >&5
 $as_echo "$as_me: Your boost libraries seems to old (version $_version)." >&6;}

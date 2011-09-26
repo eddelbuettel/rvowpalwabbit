@@ -87,9 +87,7 @@ fi
 
 AC_DEFUN([AX_BOOST_BASE], [AC_ARG_WITH([boost], [
 	AS_HELP_STRING([--with-boost@<:@=ARG@:>@],
-    	[use Boost library from a standard location (ARG=yes),
-     	 from the specified location (ARG=<path>),
-     	 or disable it (ARG=no) @<:@ARG=yes@:>@ ])], 
+    	[use Boost library from a standard location (ARG=yes), from the specified location (ARG=<path>), or disable it (ARG=no) @<:@ARG=yes@:>@ ])], 
     [
     	if test "$withval" = "no"; then
         	want_boost="no"
@@ -106,9 +104,7 @@ AC_DEFUN([AX_BOOST_BASE], [AC_ARG_WITH([boost], [
 
     AC_ARG_WITH([boost-libdir],
         AS_HELP_STRING([--with-boost-libdir=LIB_DIR],
-        	[Force given directory for boost libraries. Note that this will override 
-	        library path detection, so use this parameter only if default library 
-            detection fails and you know exactly where your boost libraries are located.]),
+        	[Force given directory for boost libraries. Note that this will override library path detection, so use this parameter only if default library detection fails and you know exactly where your boost libraries are located.]),
             [
                 if test -d "$withval"; then
                    ac_boost_lib_path="$withval"
@@ -279,13 +275,7 @@ AC_DEFUN([AX_BOOST_BASE], [AC_ARG_WITH([boost], [
 	
 	    if test "$succeeded" != "yes" ; then
 	        if test "$_version" = "0" ; then
-	            AC_MSG_NOTICE([[We could not detect the boost libraries (version 
-	                            $boost_lib_version_req_shorten or higher). If you have a 
-	                            staged boost library (still not installed) please specify
-	                            \$BOOST_ROOT in your environment and do not give a PATH 
-	                            to --with-boost option.  If you are sure you have boost installed, 
-	                            then check your version number looking in <boost/version.hpp>. 
-	                            See http://randspringer.de/boost for more documentation.]])
+	            AC_MSG_NOTICE([[We could not detect the boost libraries (version $boost_lib_version_req_shorten or higher). If you have a staged boost library (still not installed) please specify \$BOOST_ROOT in your environment and do not give a PATH to --with-boost option.  If you are sure you have boost installed, then check your version number looking in <boost/version.hpp>.]])
 	        else
 	            AC_MSG_NOTICE([Your boost libraries seems to old (version $_version).])
 	        fi
@@ -340,8 +330,7 @@ AC_DEFUN([AX_BOOST_BASE], [AC_ARG_WITH([boost], [
 AC_DEFUN([AX_BOOST_PROGRAM_OPTIONS], [
 	AC_ARG_WITH([boost-program-options],
 		AS_HELP_STRING([--with-boost-program-options@<:@=special-lib@:>@],
-                       [use the program options library from boost - it is possible to specify a certain library for the linker
-                        e.g. --with-boost-program-options=boost_program_options-gcc-mt-1_33_1 ]),
+                       [use the program options library from boost - it is possible to specify a certain library for the linker e.g. --with-boost-program-options=boost_program_options-gcc-mt-1_33_1 ]),
         [
         if test "$withval" = "no"; then
 			want_boost="no"

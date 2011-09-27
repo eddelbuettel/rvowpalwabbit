@@ -1,3 +1,10 @@
+2011-09-27  Dirk Eddelbuettel  <edd@debian.org>
+
+	* configure.in: Do not set 'march=nocona' on g++ 4.2 as it upsets the
+	ppc architecture builds on OS X
+
+	* cleanup: Also remove autom4te.cache
+
 2011-09-25  Dirk Eddelbuettel  <edd@debian.org>
 
         * DESCRIPTION: Set Version: to 0.0.4

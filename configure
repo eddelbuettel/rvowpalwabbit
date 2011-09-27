@@ -4033,10 +4033,10 @@ if test "${GXX}" = yes; then
 $as_echo "$as_me: WARNING: Only g++ version 4.2 or greater can be used with Rcpp / RVowpalWabbit." >&2;}
 	     as_fn_error $? "Please use a different compiler." "$LINENO" 5
         ;;
-	4.2)
-             ## gcc/g++-4.2 cannot do -march=native
-             MARCH_FLAG="-march=nocona"
-        ;;
+	#4.2)
+    #         ## gcc/g++-4.2 cannot do -march=native
+    #         MARCH_FLAG="-march=nocona"
+    #    ;;
 	4.3|4.4|4.5|4.6|4.7|4.8|4.9|5.*)
              ## use -march=native where we can
              MARCH_FLAG="-march=native"

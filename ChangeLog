@@ -1,3 +1,17 @@
+2012-05-17  Dirk Eddelbuettel  <edd@debian.org>
+
+	* DESCRIPTION: Version 0.0.5
+
+	* src/*: Massively invasive changes to get rid of stdout, stderr,
+	std::cout, std::cerr and exit() as now required by CRAN
+
+	* cleanup: Also remove src/symbols.rds
+
+2012-05-13  Dirk Eddelbuettel  <edd@debian.org>
+
+	* src/*: Added 'unistd.h' and 'cstring' includes to a number of files
+	to permit compilation under g++-4.7
+
 2011-09-27  Dirk Eddelbuettel  <edd@debian.org>
 
 	* configure.in: Do not set 'march=nocona' on g++ 4.2 as it upsets the

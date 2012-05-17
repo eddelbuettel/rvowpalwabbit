@@ -1,3 +1,4 @@
+#include <cstring>		// bzero()
 #include "unique_sort.h"
 
 int order_features(const void* first, const void* second)

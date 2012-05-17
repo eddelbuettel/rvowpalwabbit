@@ -4,6 +4,7 @@ embodied in the content of this file are licensed under the BSD
 (revised) open source license
  */
 
+#include <cstring>		// bzero()
 #include "sparse_dense.h"
 #include "constant.h"
 #include <math.h>

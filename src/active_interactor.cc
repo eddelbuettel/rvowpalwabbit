@@ -1,3 +1,4 @@
+#include <unistd.h>		// close()
 #include <iostream>
 #include <string>
 #include <cstring>
@@ -7,9 +8,12 @@
 #include <netinet/tcp.h>
 #include <netdb.h>
 
+#include <Rcpp.h>
+#define VWCOUT Rcpp::Rcout
+
 using std::cin;
 using std::endl;
-using std::cout;
+//using std::cout;
 using std::cerr;
 using std::string;
 
@@ -21,14 +25,12 @@ int open_socket(const char* host, unsigned short port)
 
   if (he == NULL)
     {
-      cerr << "can't resolve hostname: " << host << endl;
-      exit(1);
+      Rf_error("can't resolve hostname: %s", host);
     }
   int sd = socket(PF_INET, SOCK_STREAM, 0);
   if (sd == -1)
     {
-      cerr << "can't get socket " << endl;
-      exit(1);
+      Rf_error("can't get socket ");
     }
   sockaddr_in far_end;
   far_end.sin_family = AF_INET;
@@ -37,8 +39,7 @@ int open_socket(const char* host, unsigned short port)
   memset(&far_end.sin_zero, '\0',8);
   if (connect(sd,(sockaddr*)&far_end, sizeof(far_end)) == -1)
     {
-      cerr << "can't connect to: " << host << ':' << port << endl;
-      exit(1);
+      Rf_error("can't connect to: %s:%d", host, port);
     }
   return sd;
 }
@@ -78,8 +79,7 @@ int main(int argc, char* argv[]){
     size_t id=0;
     ret=send(s,&id,sizeof(id),0);
     if(ret<0){
-        cerr << "Could not perform handshake!" << endl;
-        exit(1);
+        Rf_error("Could not perform handshake!");
     }
     
     while(getline(cin,line)){
@@ -89,13 +89,11 @@ int main(int argc, char* argv[]){
         const char* sp = strchr(cstr,' ');
         ret=send(s,sp,len-(sp-cstr),0);
         if(ret<0){
-            cerr << "Could not send unlabeled data!" << endl;
-            exit(1);
+	  Rf_error("Could not send unlabeled data!");
         }
         ret=recvall(s, buf, 256);
         if(ret<0){
-            cerr << "Could not receive queries!" << endl;
-            exit(1);
+	  Rf_error("Could not receive queries!");
         }
         buf[ret]='\0';
         toks=&buf[0];
@@ -114,17 +112,15 @@ int main(int argc, char* argv[]){
         len = line.size();
         ret = send(s,cstr,len,0);
         if(ret<0){
-            cerr << "Could not send labeled data!" << endl;
-            exit(1);
+	  Rf_error("Could not send labeled data!");
         }
         ret=recvall(s, buf, 256);
         if(ret<0){
-            cerr << "Could not receive predictions!" << endl;
-            exit(1);
+	  Rf_error("Could not receive predictions!");
         }
     }
     close(s);
-    cout << "Went through the data by doing " << queries << " queries" << endl;
+    VWCOUT << "Went through the data by doing " << queries << " queries" << endl;
     return 0;
 }
 

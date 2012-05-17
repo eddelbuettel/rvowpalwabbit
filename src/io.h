@@ -7,6 +7,7 @@ embodied in the content of this file are licensed under the BSD
 #ifndef IO_H__
 #define IO_H__
 
+#include <unistd.h>		// close()
 #include <fcntl.h>
 #include "v_array.h"
 #include<iostream>
@@ -14,6 +15,9 @@ embodied in the content of this file are licensed under the BSD
 #ifndef O_LARGEFILE //for OSX
 #define O_LARGEFILE 0
 #endif
+
+#include <Rcpp.h>
+#define VWCOUT Rcpp::Rcout
 
 class io_buf {
  public:
@@ -52,7 +56,7 @@ class io_buf {
       break;
 
     default:
-      std::cerr << "Unknown file operation. Something other than READ/WRITE specified" << std::endl;
+      VWCOUT << "Unknown file operation. Something other than READ/WRITE specified" << std::endl;
       ret = -1;
     }
     return ret;
@@ -102,7 +106,7 @@ class io_buf {
 
   virtual void flush() {
     if (write_file(files[0], space.begin, space.index()) != (int) space.index())
-      std::cerr << "error, failed to write example\n";
+      VWCOUT << "error, failed to write example\n";
     space.end = space.begin; fsync(files[0]); }
 
   virtual bool close_file(){

@@ -69,8 +69,7 @@ size_t cache_numbits(io_buf* buf, int filepointer)
   size_t v_length;
   buf->read_file(filepointer, (char*)&v_length, sizeof(v_length));
   if(v_length>29){
-    cerr << "cache version too long, cache file is probably invalid" << endl;
-    exit(1);
+    Rf_error("cache version too long, cache file is probably invalid");
   }
   t.erase();
   if (t.index() < v_length)
@@ -79,7 +78,7 @@ size_t cache_numbits(io_buf* buf, int filepointer)
   buf->read_file(filepointer,t.begin,v_length);
   if (strcmp(t.begin,version.c_str()) != 0)
     {
-      cout << "cache has possibly incompatible version, rebuilding" << endl;
+      VWCOUT << "cache has possibly incompatible version, rebuilding" << endl;
       return 0;
     }
   
@@ -139,8 +138,7 @@ void reset_source(size_t numbits, parser* p)
 	  int f = accept(p->bound_sock,(sockaddr*)&client_address,&size);
 	  if (f < 0)
 	    {
-	      cerr << "bad client socket!" << endl;
-	      exit (1);
+	      Rf_error("bad client socket!");
 	    }
 	  
 	  // note: breaking cluster parallel online learning by dropping support for id
@@ -161,8 +159,7 @@ void reset_source(size_t numbits, parser* p)
 	  {
 	    input->reset_file(input->files[i]);
 	    if (cache_numbits(input, input->files[i]) < numbits) {
-	      cerr << "argh, a bug in caching of some sort!  Exiting\n" ;
-	      exit(1);
+	      Rf_error("argh, a bug in caching of some sort!  Exiting\n");
 	    }
 	  }
       }
@@ -182,7 +179,7 @@ void make_write_cache(size_t numbits, parser* par, string &newname,
 {
   io_buf* output = par->output;
   if (output->files.index() != 0){
-    cerr << "Warning: you tried to make two write caches.  Only the first one will be made." << endl;
+    VWCOUT << "Warning: you tried to make two write caches.  Only the first one will be made." << endl;
     return;
   }
 
@@ -191,7 +188,7 @@ void make_write_cache(size_t numbits, parser* par, string &newname,
   
   int f = output->open_file(temp.c_str(), io_buf::WRITE);
   if (f == -1) {
-    cerr << "can't create cache file !" << endl;
+    VWCOUT << "can't create cache file !" << endl;
     return;
   }
 
@@ -205,7 +202,7 @@ void make_write_cache(size_t numbits, parser* par, string &newname,
   push_many(output->finalname,newname.c_str(),newname.length()+1);
   par->write_cache = true;
   if (!quiet)
-    cerr << "creating cache_file = " << newname << endl;
+    VWCOUT << "creating cache_file = " << newname << endl;
 }
 
 void parse_cache(po::variables_map &vm, string source,
@@ -234,7 +231,7 @@ void parse_cache(po::variables_map &vm, string source,
 	}
 	else {
 	  if (!quiet)
-	    cerr << "using cache_file = " << caches[i].c_str() << endl;
+	    VWCOUT << "using cache_file = " << caches[i].c_str() << endl;
 	  par->reader = read_cached_features;
 	  if (c == global.num_bits)
 	    par->sorted_cache = true;
@@ -249,7 +246,7 @@ void parse_cache(po::variables_map &vm, string source,
   if (caches.size() == 0)
     {
       if (!quiet)
-	cerr << "using no cache" << endl;
+	VWCOUT << "using no cache" << endl;
       reserve(par->output->space,0);
     }
 }
@@ -273,8 +270,7 @@ void parse_source_args(po::variables_map& vm, parser* par, bool quiet, size_t pa
     {
       par->bound_sock = socket(PF_INET, SOCK_STREAM, 0);
       if (par->bound_sock < 0) {
-	cerr << "can't open socket!" << endl;
-	exit(1);
+	Rf_error("can't open socket!");
       }
 
       int on = 1;
@@ -292,8 +288,7 @@ void parse_source_args(po::variables_map& vm, parser* par, bool quiet, size_t pa
       // attempt to bind to socket
       if ( ::bind(par->bound_sock,(sockaddr*)&address, sizeof(address)) < 0 )
 	{
-	  cerr << "failure to bind!" << endl;
-	  exit(1);
+	  Rf_error("failure to bind!");
 	}
       int source_count = 1;
       
@@ -306,8 +301,7 @@ void parse_source_args(po::variables_map& vm, parser* par, bool quiet, size_t pa
       // background process
       if (daemon(1,1))
 	{
-	  cerr << "failure to background!" << endl;
-	  exit(1);
+	  Rf_error("failure to background!");
 	}
       // write pid file
       if (vm.count("pid_file"))
@@ -316,8 +310,7 @@ void parse_source_args(po::variables_map& vm, parser* par, bool quiet, size_t pa
 	  pid_file.open(vm["pid_file"].as<string>().c_str());
 	  if (!pid_file.is_open())
 	    {
-	      cerr << "error writing pid file" << endl;
-	      exit(1);
+	      Rf_error("error writing pid file");
 	    }
 	  pid_file << getpid() << endl;
 	  pid_file.close();
@@ -371,7 +364,7 @@ void parse_source_args(po::variables_map& vm, parser* par, bool quiet, size_t pa
 		{
 		  for (size_t i = 0; i < num_children; i++)
 		    kill(children[i], SIGTERM);
-		  exit(0);
+		  Rf_error("");
 		}
 	      if (pid < 0)
 		continue;
@@ -391,12 +384,11 @@ void parse_source_args(po::variables_map& vm, parser* par, bool quiet, size_t pa
       socklen_t size = sizeof(client_address);
       par->max_fd = 0;
       if (!global.quiet)
-	cerr << "calling accept" << endl;
+	VWCOUT << "calling accept" << endl;
       int f = accept(par->bound_sock,(sockaddr*)&client_address,&size);
       if (f < 0)
 	{
-	  cerr << "bad client socket!" << endl;
-	  exit (1);
+	  Rf_error("bad client socket!");
 	}
       
       par->label_sock = f;
@@ -407,7 +399,7 @@ void parse_source_args(po::variables_map& vm, parser* par, bool quiet, size_t pa
       push(par->input->files,f);
       par->max_fd = max(f, par->max_fd);
       if (!global.quiet)
-	cerr << "reading data from port " << port << endl;
+	VWCOUT << "reading data from port " << port << endl;
 
       par->max_fd++;
       if(vm.count("multisource"))
@@ -447,7 +439,7 @@ void parse_source_args(po::variables_map& vm, parser* par, bool quiet, size_t pa
       if (par->input->files.index() > 0)
 	{
 	  if (!quiet)
-	    cerr << "ignoring text input in favor of cache input" << endl;
+	    VWCOUT << "ignoring text input in favor of cache input" << endl;
 	}
       else
 	{
@@ -455,12 +447,11 @@ void parse_source_args(po::variables_map& vm, parser* par, bool quiet, size_t pa
 	  if (temp.length() != 0)
 	    {
 	      if (!quiet)
-		cerr << "Reading from " << temp << endl;
+		VWCOUT << "Reading from " << temp << endl;
 	      int f = par->input->open_file(temp.c_str(), io_buf::READ);
 	      if (f == -1)
 		{
-		  cerr << "can't open " << temp << ", bailing!" << endl;
-		  exit(0);
+		  Rf_error("can't open %s, bailing!", temp.c_str());
 		}
 	      par->reader = read_features;
 	      par->hasher = getHasher(hash_function);
@@ -470,10 +461,9 @@ void parse_source_args(po::variables_map& vm, parser* par, bool quiet, size_t pa
       if (par->input->files.index() == 0)// Default to stdin
 	{
 	  if (!quiet)
-	    cerr << "Reading from stdin" << endl;
+	    VWCOUT << "Reading from stdin" << endl;
 	  if (vm.count("compressed")){
-	    cerr << "Compressed source can't be read from stdin." << endl << "Directly use the compressed source with -d option";
-	    exit(0);
+	    Rf_error("Compressed source can't be read from stdin.\nDirectly use the compressed source with -d option");
 	  }
 	  push(par->input->files,fileno(stdin));
 	  par->reader = read_features;
@@ -484,12 +474,11 @@ void parse_source_args(po::variables_map& vm, parser* par, bool quiet, size_t pa
 
   if (passes > 1 && !par->resettable)
     {
-      cerr << global.program_name << ": need a cache file for multiple passes: try using --cache_file" << endl;  
-      exit(1);
+      Rf_error("%s: need a cache file for multiple passes: try using --cache_file", global.program_name);
     }
   par->input->count = par->input->files.index();
   if (!quiet)
-    cerr << "num sources = " << par->input->files.index() << endl;
+    VWCOUT << "num sources = " << par->input->files.index() << endl;
 }
 
 bool parser_done()
@@ -819,7 +808,7 @@ example* get_example(size_t thread_num)
   if (parsed_index != used_index[thread_num]) {
     size_t ring_index = used_index[thread_num]++ % global.ring_size;
     if (!(examples+ring_index)->in_use)
-      cout << used_index[thread_num] << " " << parsed_index << " " << thread_num << " " << ring_index << endl;
+      VWCOUT << used_index[thread_num] << " " << parsed_index << " " << thread_num << " " << ring_index << endl;
     assert((examples+ring_index)->in_use);
     pthread_mutex_unlock(&examples_lock);
     

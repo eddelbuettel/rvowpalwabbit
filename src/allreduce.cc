@@ -7,6 +7,7 @@ This implements the allreduce function of MPI.  Code primarily by
 Alekh Agarwal and John Langford, with help Olivier Chapelle.
 
  */
+#include <unistd.h>		// close()
 #include <iostream>
 #include <cstdio>
 #include <cmath>
@@ -23,6 +24,9 @@ Alekh Agarwal and John Langford, with help Olivier Chapelle.
 #include <sys/timeb.h>
 #include "allreduce.h"
 
+#include <Rcpp.h>
+#define VWCOUT Rcpp::Rcout
+
 using namespace std;
 string current_master="";
 
@@ -37,14 +41,14 @@ float add(float* arr, int n) {
 
 void printfloat(float* arr, int n) {
   for(int i = 0;i < n;i++)
-    cout<<arr[i]<<" ";
-  cout<<endl;
+    VWCOUT<<arr[i]<<" ";
+  VWCOUT<<endl;
 }
 
 void printchar(char* arr, int n) {
   for(int i = 0;i < n;i++)
-    cout<<arr[i]<<" ";
-  cout<<endl;
+    VWCOUT<<arr[i]<<" ";
+  VWCOUT<<endl;
 }
 
 int sock_connect(uint32_t ip, int port) {
@@ -52,8 +56,7 @@ int sock_connect(uint32_t ip, int port) {
   int sock = socket(PF_INET, SOCK_STREAM, 0);
   if (sock == -1)
     {
-      cerr << "can't get socket " << endl;
-      exit(1);
+      Rf_error("can't get socket ");
     }
   sockaddr_in far_end;
   far_end.sin_family = AF_INET;
@@ -63,17 +66,17 @@ int sock_connect(uint32_t ip, int port) {
   memset(&far_end.sin_zero, '\0',8);
   if (connect(sock,(sockaddr*)&far_end, sizeof(far_end)) == -1)
     {
-      cerr << "can't connect to: " ;
+      VWCOUT << "can't connect to: " ;
       uint32_t pip = ntohl(ip);
       char* pp = (char*)&pip;
 	
       for (size_t i = 0; i < 4; i++)
 	{
-	  cerr << (int)pp[i] << ".";
+	  VWCOUT << (int)pp[i] << ".";
 	}
-      cout << ':' << htons(port) << endl;
-      perror(NULL);
-      exit(1);
+      VWCOUT << ':' << htons(port) << endl;
+      Rf_error("");		// instead of perror(NULL)
+      //exit(1);
     }
   return sock;
 }
@@ -82,8 +85,7 @@ int getsock()
 {
   int sock = socket(PF_INET, SOCK_STREAM, 0);
   if (sock < 0) {
-      cerr << "can't open socket!" << endl;
-      exit(1);
+    Rf_error("can't open socket!");
     }
     
     int on = 1;
@@ -97,8 +99,7 @@ void all_reduce_init(string master_location, size_t unique_id, size_t total, siz
   struct hostent* master = gethostbyname(master_location.c_str());
     
   if (master == NULL) {
-    cerr << "can't resolve hostname: " << master_location << endl;
-    exit(1);
+    Rf_error("can't resolve hostname: %s", master_location.c_str());
   }
   current_master = master_location;
 
@@ -108,17 +109,16 @@ void all_reduce_init(string master_location, size_t unique_id, size_t total, siz
   int master_sock = sock_connect(master_ip, htons(port));
 
   if(write(master_sock, &unique_id, sizeof(unique_id)) < (int)sizeof(unique_id))
-    cerr << "write failed!" << endl; 
+    VWCOUT << "write failed!" << endl; 
   if(write(master_sock, &total, sizeof(total)) < (int)sizeof(total))
-    cerr << "write failed!" << endl; 
+    VWCOUT << "write failed!" << endl; 
   if(write(master_sock, &node, sizeof(node)) < (int)sizeof(node))
-    cerr << "write failed!" << endl; 
+    VWCOUT << "write failed!" << endl; 
   int ok;
   if (read(master_sock, &ok, sizeof(ok)) < (int)sizeof(ok))
-    cerr << "read 1 failed!" << endl;
+    VWCOUT << "read 1 failed!" << endl;
   if (!ok) {
-    cerr << "mapper already connected" << endl;
-    exit(1);
+    Rf_error("mapper already connected");
   }
 
   uint16_t kid_count;
@@ -126,7 +126,7 @@ void all_reduce_init(string master_location, size_t unique_id, size_t total, siz
   uint32_t parent_ip;
 
   if(read(master_sock, &kid_count, sizeof(kid_count)) < (int)sizeof(kid_count))
-    cerr << "read 2 failed!" << endl;
+    VWCOUT << "read 2 failed!" << endl;
 
   int sock = -1;
   short unsigned int netport = htons(26544);
@@ -148,8 +148,7 @@ void all_reduce_init(string master_location, size_t unique_id, size_t total, siz
 	    }
 	  else
 	    {
-	      perror("Bind failed ");
-	      exit(1);
+	      Rf_error("Bind failed ");
 	    }
 	else
 	  if (listen(sock, kid_count) < 0)
@@ -166,12 +165,12 @@ void all_reduce_init(string master_location, size_t unique_id, size_t total, siz
   }
   
   if(write(master_sock, &netport, sizeof(netport)) < (int)sizeof(netport))
-    cerr << "write failed!" << endl;
+    VWCOUT << "write failed!" << endl;
   
   if(read(master_sock, &parent_ip, sizeof(parent_ip)) < (int)sizeof(parent_ip))
-    cerr << "read 3 failed!" << endl;
+    VWCOUT << "read 3 failed!" << endl;
   if(read(master_sock, &parent_port, sizeof(parent_port)) < (int)sizeof(parent_port))
-    cerr << "read 4 failed!" << endl;
+    VWCOUT << "read 4 failed!" << endl;
 
   
   close(master_sock);
@@ -191,8 +190,7 @@ void all_reduce_init(string master_location, size_t unique_id, size_t total, siz
       int f = accept(sock,(sockaddr*)&child_address,&size);
       if (f < 0)
 	{
-	  cerr << "bad client socket!" << endl;
-	  exit (1);
+	  Rf_error("bad client socket!");
 	}
       socks.children[i] = f;
     }
@@ -223,9 +221,9 @@ void pass_up(char* buffer, int left_read_pos, int right_read_pos, int& parent_se
     //going to pass up this chunk of data to the parent
     int write_size = write(parent_sock, buffer+parent_sent_pos, my_bufsize);
     if(write_size < my_bufsize) 
-      cerr<<"Write to parent failed "<<my_bufsize<<" "<<write_size<<" "<<parent_sent_pos<<" "<<left_read_pos<<" "<<right_read_pos<<endl ;
+      VWCOUT<<"Write to parent failed "<<my_bufsize<<" "<<write_size<<" "<<parent_sent_pos<<" "<<left_read_pos<<" "<<right_read_pos<<endl ;
     parent_sent_pos += my_bufsize;
-    //cerr<<"buf size = "<<my_bufsize<<" "<<parent_sent_pos<<endl;
+    //VWCOUT<<"buf size = "<<my_bufsize<<" "<<parent_sent_pos<<endl;
   }
 
 }
@@ -238,9 +236,9 @@ void pass_down(char* buffer, int parent_read_pos, int&children_sent_pos, int* ch
   if(my_bufsize > 0) {
     //going to pass up this chunk of data to the children
     if(child_sockets[0] != -1 && write(child_sockets[0], buffer+children_sent_pos, my_bufsize) < my_bufsize) 
-      cerr<<"Write to left child failed\n";
+      VWCOUT<<"Write to left child failed\n";
     if(child_sockets[1] != -1 && write(child_sockets[1], buffer+children_sent_pos, my_bufsize) < my_bufsize) 
-      cerr<<"Write to right child failed\n";
+      VWCOUT<<"Write to right child failed\n";
     
     children_sent_pos += my_bufsize;
   }
@@ -284,18 +282,16 @@ void reduce(char* buffer, int n, int parent_sock, int* child_sockets) {
       if(child_read_pos[0] < n || child_read_pos[1] < n) {
 	if (max_fd > 0 && select(max_fd,&fds,NULL, NULL, NULL) == -1)
 	  {
-	    cerr << "Select failed!" << endl;
-	    perror(NULL);
-	    exit (1);
+	    Rf_error("Select failed!");
 	  }
       
 	for(int i = 0;i < 2;i++) {
 	  if(child_sockets[i] != -1 && FD_ISSET(child_sockets[i],&fds)) {
 	    //there is data to be left from left child
 	    if(child_read_pos[i] == n) {
-	      cerr<<"I think child has no data to send but he thinks he has "<<FD_ISSET(child_sockets[0],&fds)<<" "<<FD_ISSET(child_sockets[1],&fds)<<endl;
-	      fflush(stderr);
-	      exit(1);
+	      VWCOUT<<"I think child has no data to send but he thinks he has "<<FD_ISSET(child_sockets[0],&fds)<<" "<<FD_ISSET(child_sockets[1],&fds)<<endl;
+	      //fflush(stderr);
+	      Rf_error("");
 	    }
 	  
 	
@@ -303,9 +299,7 @@ void reduce(char* buffer, int n, int parent_sock, int* child_sockets) {
 	    size_t count = min(buf_size,n - child_read_pos[i]);
 	    int read_size = read(child_sockets[i], child_read_buf[i] + child_unprocessed[i], count);
 	    if(read_size == -1) {
-	      cerr <<" Read from child failed\n";
-	      perror(NULL);
-	      exit(1);
+	      Rf_error("Read from child failed");
 	    }
 	    
 	    //cout<<"Read "<<read_size<<" bytes\n";
@@ -369,14 +363,12 @@ void broadcast(char* buffer, int n, int parent_sock, int* child_sockets) {
       if (parent_sock != -1) {
 	//there is data to be read from the parent
 	if(parent_read_pos == n) {
-	  cerr<<"I think parent has no data to send but he thinks he has\n";
-	  exit(1);
+	  Rf_error("I think parent has no data to send but he thinks he has");
 	}
 	size_t count = min(buf_size,n-parent_read_pos);
 	int read_size = read(parent_sock, buffer + parent_read_pos, count);
 	if(read_size == -1) {
-	  cerr <<" Read from parent failed\n";
-	  perror(NULL);
+	  Rf_error("Read from parent failed");
 	}
 	parent_read_pos += read_size;	
       }

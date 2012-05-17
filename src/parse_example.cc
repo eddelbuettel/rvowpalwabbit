@@ -4,12 +4,16 @@ embodied in the content of this file are licensed under the BSD
 (revised) open source license
  */
 
+#include <cstring>		// bzero()
 #include <math.h>
 #include <ctype.h>
 #include "parse_example.h"
 #include "hash.h"
 #include "cache.h"
 #include "unique_sort.h"
+
+#include <Rcpp.h>
+#define VWCOUT Rcpp::Rcout
 
 using namespace std;
 
@@ -42,9 +46,10 @@ hash_func_t getHasher(const string& s){
   else if(s=="all")
     return hashall;
   else{
-    cerr << "Unknown hash function: " << s << ". Exiting " << endl;
-    exit(1);
+    Rf_error("Unknown hash function: %s. Exiting", s.c_str());
+    return hashstring;// not reached, just for -Wall
   }
+  return hashstring;// not reached, just for -Wall
 }
 
 void feature_value(substring &s, v_array<substring>& name, float &v)
@@ -60,16 +65,16 @@ void feature_value(substring &s, v_array<substring>& name, float &v)
     v = float_of_substring(name[1]);
     if ( isnan(v))
       {
-	cerr << "error NaN value for feature: ";
-	cerr.write(name[0].start, name[0].end - name[0].start);
-	cerr << " terminating." << endl;
-	exit(1);
+	VWCOUT << "error NaN value for feature: ";
+	//cout.write(name[0].start, name[0].end - name[0].start);
+	VWCOUT << " terminating." << endl;
+	Rf_error("");
       }
     break;
   default:
-    cerr << "example with a wierd name.  What is ";
-    cerr.write(s.start, s.end - s.start);
-    cerr << "\n";
+    VWCOUT << "example with a wierd name.  What is ";
+    //cerr.write(s.start, s.end - s.start);
+    VWCOUT << "\n";
   }
 }
 

@@ -117,7 +117,7 @@ bool command_example(example* ec, gd_thread_params* params) {
 	final_regressor_name = string(ec->tag.begin+5, (ec->tag).index()-5);
 
       if (!global.quiet)
-	cerr << "saving regressor to " << final_regressor_name << endl;
+	VWCOUT << "saving regressor to " << final_regressor_name << endl;
       dump_regressor(final_regressor_name, *(global.reg));
 
       return true;
@@ -130,7 +130,7 @@ float finalize_prediction(float ret)
 {
   if ( isnan(ret))
     {
-      cout << "you have a NAN!!!!!" << endl;
+      VWCOUT << "you have a NAN!!!!!" << endl;
       return 0.;
     }
   if ( ret > global.max_label )
@@ -164,7 +164,8 @@ void print_update(example *ec)
       else
 	sprintf(label_buf,"%8.4f",ld->label);
 
-      fprintf(stderr, "%-10.6f %-10.6f %8ld %8.1f   %s %8.4f %8lu\n",
+      //fprintf(stderr, "%-10.6f %-10.6f %8ld %8.1f   %s %8.4f %8lu\n",
+      REprintf("%-10.6f %-10.6f %8ld %8.1f   %s %8.4f %8lu\n",
 	      global.sum_loss/global.weighted_examples,
 	      global.sum_loss_since_last_dump / (global.weighted_examples - global.old_weighted_examples),
 	      (long int)global.example_number,
@@ -330,7 +331,7 @@ void print_quad(weight* weights, feature& page_feature, v_array<feature> &offer_
   for (feature* ele = offer_features.begin; ele != offer_features.end; ele++)
     {
       ostringstream tempstream;
-      cout << '\t' << (((halfhash + ele->weight_index)/global.stride) & mask) 
+      VWCOUT << '\t' << (((halfhash + ele->weight_index)/global.stride) & mask) 
 	   << ':' << (ele->x*page_feature.x)
 	   << ':' << real_weight(weights[(halfhash + ele->weight_index) & mask], gravity);
       string_value sv = {weights[ele->weight_index & mask]*ele->x, tempstream.str()};
@@ -352,11 +353,11 @@ void print_features(regressor &reg, example* &ec)
       for (size_t* i = ec->indices.begin; i != ec->indices.end; i++) 
 	for (audit_data *f = ec->audit_features[*i].begin; f != ec->audit_features[*i].end; f++)
 	  {
-	    cout << '\t' << f->space << '^' << f->feature << ':' << f->weight_index/global.stride << ':' << f->x;
+	    VWCOUT << '\t' << f->space << '^' << f->feature << ':' << f->weight_index/global.stride << ':' << f->x;
 	    for (size_t k = 0; k < global.lda; k++)
-	      cout << ':' << weights[(f->weight_index+k) & thread_mask];
+	      VWCOUT << ':' << weights[(f->weight_index+k) & thread_mask];
 	  }
-      cout << " total of " << count << " features." << endl;
+      VWCOUT << " total of " << count << " features." << endl;
     }
   else
     {
@@ -400,16 +401,16 @@ void print_features(regressor &reg, example* &ec)
       sort(features.begin(),features.end());
 
       for (vector<string_value>::iterator sv = features.begin(); sv!= features.end(); sv++)
-	cout << '\t' << (*sv).s;
-      cout << endl;
+	VWCOUT << '\t' << (*sv).s;
+      VWCOUT << endl;
     }
 }
 
 void print_audit_features(regressor &reg, example* ec)
 {
-  fflush(stdout);
-  print_result(fileno(stdout),ec->final_prediction,-1,ec->tag);
-  fflush(stdout);
+  //fflush(stdout);
+  //print_result(fileno(stdout),ec->final_prediction,-1,ec->tag);
+  //fflush(stdout);
   print_features(reg, ec);
 }
 
@@ -725,7 +726,7 @@ void local_predict(example* ec, gd_vars& vars, regressor& reg, size_t thread_num
 	  char c[len];
 	  bufcache_simple_label(ld,c);
 	  if (write(global.local_prediction,c,len) < (int)len)
-	    cerr << "uhoh" << endl;
+	    VWCOUT << "uhoh" << endl;
 	}
     }
 

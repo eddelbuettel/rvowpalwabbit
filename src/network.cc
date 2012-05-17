@@ -1,3 +1,4 @@
+#include <unistd.h>	// write()
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
@@ -9,6 +10,9 @@
 
 #include <string>
 #include <iostream>
+
+#include <Rcpp.h>
+#define VWCOUT Rcpp::Rcout
 
 using namespace std;
 
@@ -28,14 +32,12 @@ int open_socket(const char* host)
 
   if (he == NULL)
     {
-      cerr << "can't resolve hostname: " << host << endl;
-      exit(1);
+      Rf_error("can't resolve hostname: %s", host);
     }
   int sd = socket(PF_INET, SOCK_STREAM, 0);
   if (sd == -1)
     {
-      cerr << "can't get socket " << endl;
-      exit(1);
+      Rf_error("can't get socket ");
     }
   sockaddr_in far_end;
   far_end.sin_family = AF_INET;
@@ -44,11 +46,10 @@ int open_socket(const char* host)
   memset(&far_end.sin_zero, '\0',8);
   if (connect(sd,(sockaddr*)&far_end, sizeof(far_end)) == -1)
     {
-      cerr << "can't connect to: " << host << ':' << port << endl;
-      exit(1);
+      Rf_error("can't connect to: %s:%d", host, port);
     }
   char id = '\0';
   if (write(sd, &id, sizeof(id)) < (int)sizeof(id))
-    cerr << "write failed!" << endl;
+    VWCOUT << "write failed!" << endl;
   return sd;
 }

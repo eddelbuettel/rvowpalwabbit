@@ -17,6 +17,9 @@ using namespace std;
 #include "global_data.h"
 #include "io.h"
 
+#include <Rcpp.h>
+#define VWCOUT Rcpp::Rcout
+
 void initialize_regressor(regressor &r)
 {
   size_t length = ((size_t)1) << global.num_bits;
@@ -46,8 +49,7 @@ void initialize_regressor(regressor &r)
 	r.regularizers[i] = (weight *)calloc(2*length/num_threads, sizeof(weight));
       if (r.weight_vectors[i] == NULL || (r.regularizers != NULL && r.regularizers[i] == NULL))
         {
-          cerr << global.program_name << ": Failed to allocate weight array: try decreasing -b <bits>" << endl;
-          exit (1);
+          Rf_error("%s: Failed to allocate weight array: try decreasing -b <bits>", global.program_name);
         }
       if (global.initial_weight != 0.)
 	for (size_t j = 0; j < global.stride*length/num_threads; j+=global.stride)
@@ -81,8 +83,7 @@ void read_vector(const char* file, regressor& r, bool& initialized, bool reg_vec
   ifstream source(file);
   if (!source.is_open())
     {
-      cout << "can't open " << file << endl << " ... exiting." << endl;
-      exit(1);
+      Rf_error("can't open %s ... exiting.", file);
     }
 
   
@@ -94,8 +95,7 @@ void read_vector(const char* file, regressor& r, bool& initialized, bool reg_vec
   source.read(temp.begin,v_length);
   if (strcmp(temp.begin,version.c_str()) != 0)
     {
-      cout << "source has possibly incompatible version!" << endl;
-      exit(1);
+      Rf_error("source has possibly incompatible version!");
     }
   
   source.read((char*)&global.min_label, sizeof(global.min_label));
@@ -106,8 +106,7 @@ void read_vector(const char* file, regressor& r, bool& initialized, bool reg_vec
   if (!initialized){
     if (global.default_bits != true && global.num_bits != local_num_bits)
       {
-	cout << "Wrong number of bits for source!" << endl;
-	exit (1);
+	Rf_error("Wrong number of bits for source!");
       }
     global.default_bits = false;
     global.num_bits = local_num_bits;
@@ -115,8 +114,7 @@ void read_vector(const char* file, regressor& r, bool& initialized, bool reg_vec
   else 
     if (local_num_bits != global.num_bits)
       {
-	cout << "can't combine sources with different feature number!" << endl;
-	exit (1);
+	Rf_error("can't combine sources with different feature number!");
       }
   
   size_t local_thread_bits;
@@ -128,8 +126,7 @@ void read_vector(const char* file, regressor& r, bool& initialized, bool reg_vec
   else 
     if (local_thread_bits != global.thread_bits)
       {
-	cout << "can't combine sources trained with different numbers of threads!" << endl;
-	exit (1);
+	Rf_error("can't combine sources trained with different numbers of threads!");
       }
   
   int len;
@@ -157,8 +154,7 @@ void read_vector(const char* file, regressor& r, bool& initialized, bool reg_vec
     }
   else
     {
-      cout << "can't combine regressors" << endl;
-      exit(1);
+      Rf_error("can't combine regressors");
     }
 
   if (global.rank > 0)
@@ -184,14 +180,14 @@ void read_vector(const char* file, regressor& r, bool& initialized, bool reg_vec
   else
     if (local_pairs != global.pairs)
       {
-	cout << "can't combine sources with different features!" << endl;
+	VWCOUT << "can't combine sources with different features!" << endl;
 	for (size_t i = 0; i < local_pairs.size(); i++)
-	  cout << local_pairs[i] << " " << local_pairs[i].size() << " ";
-	cout << endl;
+	  VWCOUT << local_pairs[i] << " " << local_pairs[i].size() << " ";
+	VWCOUT << endl;
 	for (size_t i = 0; i < global.pairs.size(); i++)
-	  cout << global.pairs[i] << " " << global.pairs[i].size() << " ";
-	cout << endl;
-	exit (1);
+	  VWCOUT << global.pairs[i] << " " << global.pairs[i].size() << " ";
+	VWCOUT << endl;
+	Rf_error("");
       }
   size_t local_ngram;
   source.read((char*)&local_ngram, sizeof(local_ngram));
@@ -206,8 +202,7 @@ void read_vector(const char* file, regressor& r, bool& initialized, bool reg_vec
   else
     if (global.ngram != local_ngram || global.skips != local_skips)
       {
-	cout << "can't combine sources with different ngram features!" << endl;
-	exit(1);
+	Rf_error("can't combine sources with different ngram features!");
       }
 
   size_t stride = global.stride;
@@ -245,7 +240,7 @@ void parse_regressor_args(po::variables_map& vm, regressor& r, string& final_reg
   if (vm.count("final_regressor")) {
     final_regressor_name = vm["final_regressor"].as<string>();
     if (!quiet)
-      cerr << "final_regressor = " << vm["final_regressor"].as<string>() << endl;
+      VWCOUT << "final_regressor = " << vm["final_regressor"].as<string>() << endl;
   }
   else
     final_regressor_name = "";
@@ -318,8 +313,7 @@ void dump_regressor(string reg_name, regressor &r, bool as_text, bool reg_vector
   
   if (f<0)
     {
-      cout << "can't open: " << start_name << " for writing, exiting" << endl;
-      exit(1);
+      Rf_error("can't open: %s for writing, exiting", start_name.c_str());
     }
   size_t v_length = version.length()+1;
   if (!as_text) {

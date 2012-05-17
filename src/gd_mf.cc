@@ -170,15 +170,15 @@ void mf_print_offset_features(regressor &reg, example* &ec, size_t offset)
     if (ec->audit_features[*i].begin != ec->audit_features[*i].end)
       for (audit_data *f = ec->audit_features[*i].begin; f != ec->audit_features[*i].end; f++)
 	{
-	  cout << '\t' << f->space << '^' << f->feature << ':' << f->weight_index <<"(" << ((f->weight_index + offset) & thread_mask)  << ")" << ':' << f->x;
+	  VWCOUT << '\t' << f->space << '^' << f->feature << ':' << f->weight_index <<"(" << ((f->weight_index + offset) & thread_mask)  << ")" << ':' << f->x;
 
-	  cout << ':' << weights[(f->weight_index + offset) & thread_mask];
+	  VWCOUT << ':' << weights[(f->weight_index + offset) & thread_mask];
 	}
     else
       for (feature *f = ec->atomics[*i].begin; f != ec->atomics[*i].end; f++)
 	{
-	  cout << '\t' << f->weight_index << ':' << f->x;
-	  cout << ':' << weights[(f->weight_index + offset) & thread_mask];
+	  VWCOUT << '\t' << f->weight_index << ':' << f->x;
+	  VWCOUT << ':' << weights[(f->weight_index + offset) & thread_mask];
 	}
   for (vector<string>::iterator i = global.pairs.begin(); i != global.pairs.end();i++) 
     if (ec->atomics[(int)(*i)[0]].index() > 0 && ec->atomics[(int)(*i)[1]].index() > 0)
@@ -189,15 +189,15 @@ void mf_print_offset_features(regressor &reg, example* &ec, size_t offset)
 	    for (audit_data* f = ec->audit_features[(int)(*i)[0]].begin; f!= ec->audit_features[(int)(*i)[0]].end; f++)
 	      for (audit_data* f2 = ec->audit_features[(int)(*i)[1]].begin; f2!= ec->audit_features[(int)(*i)[1]].end; f2++)
 		{
-		  cout << '\t' << f->space << k << '^' << f->feature << ':' << ((f->weight_index+k)&thread_mask) 
+		  VWCOUT << '\t' << f->space << k << '^' << f->feature << ':' << ((f->weight_index+k)&thread_mask) 
 		       <<"(" << ((f->weight_index + offset +k) & thread_mask)  << ")" << ':' << f->x;
-		  cout << ':' << weights[(f->weight_index + offset + k) & thread_mask];
+		  VWCOUT << ':' << weights[(f->weight_index + offset + k) & thread_mask];
 
-		  cout << ':' << f2->space << k << '^' << f2->feature << ':' << ((f2->weight_index+k)&thread_mask) 
+		  VWCOUT << ':' << f2->space << k << '^' << f2->feature << ':' << ((f2->weight_index+k)&thread_mask) 
 		       <<"(" << ((f2->weight_index + offset +k) & thread_mask)  << ")" << ':' << f2->x;
-		  cout << ':' << weights[(f2->weight_index + offset + k) & thread_mask];
+		  VWCOUT << ':' << weights[(f2->weight_index + offset + k) & thread_mask];
 
-		  cout << ':' <<  weights[(f->weight_index + offset + k) & thread_mask] * weights[(f2->weight_index + offset + k) & thread_mask];
+		  VWCOUT << ':' <<  weights[(f->weight_index + offset + k) & thread_mask] * weights[(f2->weight_index + offset + k) & thread_mask];
 
 		}
 	  }
@@ -206,7 +206,7 @@ void mf_print_offset_features(regressor &reg, example* &ec, size_t offset)
 
 void mf_print_audit_features(regressor &reg, example* ec, size_t offset)
 {
-  print_result(fileno(stdout),ec->final_prediction,-1,ec->tag);
+  //print_result(fileno(stdout),ec->final_prediction,-1,ec->tag);
   mf_print_offset_features(reg, ec, offset);
 }
 

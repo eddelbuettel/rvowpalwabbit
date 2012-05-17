@@ -4,8 +4,12 @@ embodied in the content of this file are licensed under the BSD
 (revised) open source license
  */
 
+#include <cstring>		// bzero()
 #include "cache.h"
 #include "unique_sort.h"
+
+#include <Rcpp.h>
+#define VWCOUT Rcpp::Rcout
 
 using namespace std;
 
@@ -73,7 +77,7 @@ int read_cached_features(parser* p, void* ec)
       size_t temp;
       unsigned char index = 0;
       if((temp = buf_read(*input,c,sizeof(index) + sizeof(size_t))) < sizeof(index) + sizeof(size_t)) {
-	cerr << "truncated example! " << temp << " " << char_size + sizeof(size_t) << endl;
+	VWCOUT << "truncated example! " << temp << " " << char_size + sizeof(size_t) << endl;
 	return 0;
       }
 
@@ -87,7 +91,7 @@ int read_cached_features(parser* p, void* ec)
       p->input->set(c);
       total += storage; 
      if (buf_read(*input,c,storage) < storage) {
-	cerr << "truncated example! wanted: " << storage << " bytes" << endl;
+	VWCOUT << "truncated example! wanted: " << storage << " bytes" << endl;
 	return 0;
       }
 

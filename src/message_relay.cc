@@ -1,3 +1,4 @@
+#include <cstring>		// bzero()
 #include <stdlib.h>
 #include <pthread.h>
 #include <float.h>

@@ -11,6 +11,9 @@
 #include "v_array.h"
 #include "zlib.h"
 
+#include <Rcpp.h>
+#define VWCOUT Rcpp::Rcout
+
 class comp_io_buf : public io_buf
 {
 public:
@@ -48,7 +51,7 @@ public:
       break;
 
     default:
-      std::cerr << "Unknown file operation. Something other than READ/WRITE specified" << std::endl;
+      VWCOUT << "Unknown file operation. Something other than READ/WRITE specified" << std::endl;
       ret = -1;
     }
     return ret;
@@ -78,7 +81,7 @@ public:
   virtual void flush()
   {
     if (write_file(files[0], space.begin, space.index()) != (int) ((space.index())))
-      std::cerr << "error, failed to write to cache\n";
+      VWCOUT << "error, failed to write to cache\n";
     space.end = space.begin;
   }
 

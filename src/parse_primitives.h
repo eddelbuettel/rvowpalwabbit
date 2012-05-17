@@ -7,6 +7,9 @@ embodied in the content of this file are licensed under the BSD
 #ifndef PP
 #define PP
 
+#include <Rcpp.h>
+#define VWCOUT Rcpp::Rcout
+
 #include "v_array.h"
 #include<iostream>
 
@@ -27,7 +30,8 @@ inline char* safe_index(char *start, char v, char *max)
 
 inline void print_substring(substring s)
 {
-  std::cout.write(s.start,s.end - s.start);
+  //std::cout.write(s.start,s.end - s.start);
+  Rprintf("%s", s.start);
 }
 
 inline float float_of_substring(substring s)
@@ -36,7 +40,7 @@ inline float float_of_substring(substring s)
   float f = strtof(s.start,&endptr);
   if (endptr == s.start && s.start != s.end)
     {
-      std::cout << "error: " << std::string(s.start, s.end-s.start).c_str() << " is not a float" << std::endl;
+      VWCOUT << "error: " << std::string(s.start, s.end-s.start).c_str() << " is not a float" << std::endl;
       f = 0;
     }
   return f;
@@ -48,7 +52,7 @@ inline float double_of_substring(substring s)
   float f = strtod(s.start,&endptr);
   if (endptr == s.start && s.start != s.end)
     {
-      std::cout << "error: " << std::string(s.start, s.end-s.start).c_str() << " is not a double" << std::endl;
+      VWCOUT << "error: " << std::string(s.start, s.end-s.start).c_str() << " is not a double" << std::endl;
       f = 0;
     }
   return f;

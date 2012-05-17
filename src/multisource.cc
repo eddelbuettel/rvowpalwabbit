@@ -1,3 +1,4 @@
+#include <cstring>		// bzero()
 #include "multisource.h"
 #include "simple_label.h"
 
@@ -5,6 +6,9 @@
 #include <sys/socket.h>
 #include <errno.h>
 #include <stdio.h>
+
+#include <Rcpp.h>
+#define VWCOUT Rcpp::Rcout
 
 using namespace std;
 
@@ -20,9 +24,7 @@ int really_read(int sock, void* in, size_t count)
       else
 	if (r < 0)
 	  {
-	    cerr << "argh! bad read! on message from " << sock << endl;
-	    perror(NULL);
-	    exit(0);
+	    Rf_error("argh! bad read! on message from %d", sock);
 	  }
 	else
 	  {
@@ -51,9 +53,7 @@ void send_prediction(int sock, prediction &p)
 {
   if (write(sock, &p, sizeof(p)) < (int)sizeof(p))
     {
-      cerr << "argh! bad write! " << endl;
-      perror(NULL);
-      exit(0);
+      Rf_error("argh! bad write! ");
     }
 }
 
@@ -61,9 +61,7 @@ void send_global_prediction(int sock, global_prediction p)
 {
   if (write(sock, &p, sizeof(p)) < (int)sizeof(p))
     {
-      cerr << "argh! bad global write! " << sock << endl;
-      perror(NULL);
-      exit(0);
+      Rf_error("argh! bad global write! ");
     }
 }
 
@@ -89,9 +87,7 @@ int receive_features(parser* p, void* ex)
     {
       if (select(p->max_fd,&fds,NULL, NULL, NULL) == -1)
 	{
-	  cerr << "Select failed!" << endl;
-	  perror(NULL);
-	  exit (1);
+	  Rf_error("Select failed!");
 	}
       for (int index = 0; index < (int)(input->files.index()-num_finished); index++)
 	{
@@ -117,7 +113,7 @@ int receive_features(parser* p, void* ex)
 	      else
 		{
 		  if (pre.example_number != ++ (p->counts[index]))
-		    cout << "count is off! " << pre.example_number << " != " << p->counts[index] << 
+		    VWCOUT << "count is off! " << pre.example_number << " != " << p->counts[index] << 
 		      " for source " << index << " prediction = " << pre.p << endl;
 		  if (pre.example_number == p->finished_count + global.ring_size)
 		    FD_CLR(sock,&fds);//this ones to far ahead, let the buffer fill for awhile.
@@ -125,7 +121,7 @@ int receive_features(parser* p, void* ex)
 		  if (p->pes[ring_index].features.index() == 0)
 		    p->pes[ring_index].example_number = pre.example_number;
 		  if (p->pes[ring_index].example_number != (int)pre.example_number)
-		    cerr << "Error, example " << p->pes[ring_index].example_number << " != " << pre.example_number << endl;
+		    VWCOUT << "Error, example " << p->pes[ring_index].example_number << " != " << pre.example_number << endl;
 		  feature f = {pre.p, (uint32_t)p->ids[index]};
 		  push(p->pes[ring_index].features, f);
 		  if (sock == p->label_sock) // The label source

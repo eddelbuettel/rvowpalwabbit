@@ -1,4 +1,8 @@
+#include <cstring>		// bzero()
 #include <float.h>
+
+#include <Rcpp.h>
+#define VWCOUT Rcpp::Rcout
 
 #include "simple_label.h"
 #include "cache.h"
@@ -91,8 +95,8 @@ void parse_simple_label(void* v, v_array<substring>& words)
     ld->initial = float_of_substring(words[2]);
     break;
   default:
-    cerr << "malformed example!\n";
-    cerr << "words.index() = " << words.index() << endl;
+    VWCOUT << "malformed example!\n";
+    VWCOUT << "words.index() = " << words.index() << endl;
   }
 }
 

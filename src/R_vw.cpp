@@ -25,19 +25,19 @@ extern "C" SEXP Rvw(SEXP args) {
                                + (1.0 - best_constant)*best_constant*best_constant);
   
         if (!global.quiet) {
-            std::cerr.precision(4);
-            std::cerr << std::endl << "finished run";
-            std::cerr << std::endl << "number of examples = " << global.example_number;
-            std::cerr << std::endl << "weighted example sum = " << global.weighted_examples;
-            std::cerr << std::endl << "weighted label sum = " << global.weighted_labels;
-            std::cerr << std::endl << "average loss = " << global.sum_loss / global.weighted_examples;
-            std::cerr << std::endl << "best constant = " << best_constant;
+            //std::cerr.precision(4);
+            VWCOUT << std::endl << "finished run";
+            VWCOUT << std::endl << "number of examples = " << global.example_number;
+            VWCOUT << std::endl << "weighted example sum = " << global.weighted_examples;
+            VWCOUT << std::endl << "weighted label sum = " << global.weighted_labels;
+            VWCOUT << std::endl << "average loss = " << global.sum_loss / global.weighted_examples;
+            VWCOUT << std::endl << "best constant = " << best_constant;
             if (global.min_label == 0. && global.max_label == 1. && best_constant < 1. && best_constant > 0.)
-                std::cerr << std::endl << "best constant's loss = " << constant_loss;
-            std::cerr << std::endl << "total feature number = " << global.total_features;
+                VWCOUT << std::endl << "best constant's loss = " << constant_loss;
+            VWCOUT << std::endl << "total feature number = " << global.total_features;
             if (global.active_simulation)
-                std::cerr << std::endl << "total queries = " << global.queries << std::endl;
-            std::cerr << std::endl;
+                VWCOUT << std::endl << "total queries = " << global.queries << std::endl;
+            VWCOUT << std::endl;
         }
   
         Rcpp::DataFrame df = Rcpp::DataFrame::create(Rcpp::Named("numberExamples")     = static_cast<double>(global.example_number),

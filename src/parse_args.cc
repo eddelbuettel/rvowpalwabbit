@@ -3,6 +3,7 @@ Copyright (c) 2009 Yahoo! Inc.  All rights reserved.  The copyrights
 embodied in the content of this file are licensed under the BSD
 (revised) open source license
  */
+#include <cstring>		// bzero()
 #include <stdio.h>
 #include <float.h>
 
@@ -14,6 +15,9 @@ embodied in the content of this file are licensed under the BSD
 #include "sender.h"
 #include "network.h"
 #include "global_data.h"
+
+#include <Rcpp.h>
+#define VWCOUT Rcpp::Rcout
 
 using namespace std;
 //
@@ -191,8 +195,8 @@ po::variables_map parse_args(int argc, char *argv[], boost::program_options::opt
 
   if (vm.count("help") || argc == 1) {
     /* upon direct query for help -- spit it out to stdout */
-    cout << "\n" << desc << "\n";
-    exit(0);
+    VWCOUT << "\n" << desc << "\n";
+    Rf_error("");
   }
 
   if (vm.count("quiet"))
@@ -214,24 +218,23 @@ po::variables_map parse_args(int argc, char *argv[], boost::program_options::opt
       vars.power_t = 0.0;
       if (global.thread_bits != 0)
 	{
-	  cout << "adaptive code isn't correct with multiple learning cores" << endl;
-	  exit(1);
+	  Rf_error("adaptive code isn't correct with multiple learning cores");
 	}
   }
 
   if (vm.count("backprop")) {
       global.backprop = true;
-      cout << "enabling backprop updates" << endl;
+      VWCOUT << "enabling backprop updates" << endl;
   }
 
   if (vm.count("corrective")) {
       global.corrective = true;
-      cout << "enabling corrective updates" << endl;
+      VWCOUT << "enabling corrective updates" << endl;
   }
 
   if (vm.count("delayed_global")) {
       global.delayed_global = true;
-      cout << "enabling delayed_global updates" << endl;
+      VWCOUT << "enabling delayed_global updates" << endl;
   }
   
   if (vm.count("bfgs") || vm.count("conjugate_gradient")) {
@@ -242,36 +245,35 @@ po::variables_map parse_args(int argc, char *argv[], boost::program_options::opt
     }
     if (!global.quiet) {
       if (global.m>0)
-	cerr << "enabling BFGS based optimization ";
+	VWCOUT << "enabling BFGS based optimization ";
       else
-	cerr << "enabling conjugate gradient optimization via BFGS ";
+	VWCOUT << "enabling conjugate gradient optimization via BFGS ";
       if (global.hessian_on)
-	cerr << "with curvature calculation" << endl;
+	VWCOUT << "with curvature calculation" << endl;
       else
-	cerr << "**without** curvature calculation" << endl;
+	VWCOUT << "**without** curvature calculation" << endl;
     }
     if (global.numpasses < 2)
       {
-	cout << "you must make at least 2 passes to use BFGS" << endl;
-	exit(1);
+	Rf_error("you must make at least 2 passes to use BFGS");
       }
   }
 
 
   if (vm.count("version") || argc == 1) {
     /* upon direct query for version -- spit it out to stdout */
-    cout << version << "\n";
-    exit(0);
+    VWCOUT << version << "\n";
+    Rf_error("");
   }
 
 
   if(vm.count("ngram")){
     global.ngram = vm["ngram"].as<size_t>();
-    if(!vm.count("skip_gram")) cerr << "You have chosen to generate " << global.ngram << "-grams" << endl;
+    if(!vm.count("skip_gram")) VWCOUT << "You have chosen to generate " << global.ngram << "-grams" << endl;
     if(vm.count("sort_features"))
       {
-	cerr << "ngram is incompatible with sort_features.  " << endl;
-	exit(1);
+	VWCOUT << "ngram is incompatible with sort_features.  " << endl;
+	Rf_error("");
       }
   }
   if(vm.count("skips"))
@@ -279,15 +281,14 @@ po::variables_map parse_args(int argc, char *argv[], boost::program_options::opt
     global.skips = vm["skips"].as<size_t>();
     if(!vm.count("ngram"))
       {
-	cout << "You can not skip unless ngram is > 1" << endl;
-	exit(1);
+	Rf_error("You can not skip unless ngram is > 1");
       }
-    cerr << "You have chosen to generate " << global.skips << "-skip-" << global.ngram << "-grams" << endl;
+    VWCOUT << "You have chosen to generate " << global.skips << "-skip-" << global.ngram << "-grams" << endl;
     if(global.skips > 4)
       {
-      cout << "*********************************" << endl;
-      cout << "Generating these features might take quite some time" << endl;
-      cout << "*********************************" << endl;
+      VWCOUT << "*********************************" << endl;
+      VWCOUT << "Generating these features might take quite some time" << endl;
+      VWCOUT << "*********************************" << endl;
       }
     }
   if (vm.count("bit_precision"))
@@ -296,8 +297,7 @@ po::variables_map parse_args(int argc, char *argv[], boost::program_options::opt
       global.num_bits = vm["bit_precision"].as< size_t>();
       if (global.num_bits > 29)
 	{
-	  cout << "Only 29 or fewer bits allowed.  If this is a serious limit, speak up." << endl;
-	  exit(1);
+	  Rf_error("Only 29 or fewer bits allowed.  If this is a serious limit, speak up.");
 	}
     }
   
@@ -316,8 +316,7 @@ po::variables_map parse_args(int argc, char *argv[], boost::program_options::opt
     par->sort_features = true;
 
   if (global.num_bits > 30) {
-    cerr << "The system limits at 30 bits of precision!\n" << endl;
-    exit(1);
+    Rf_error("The system limits at 30 bits of precision!");
   }
 
   if (vm.count("quadratic"))
@@ -325,17 +324,16 @@ po::variables_map parse_args(int argc, char *argv[], boost::program_options::opt
       global.pairs = vm["quadratic"].as< vector<string> >();
       if (!global.quiet)
 	{
-	  cerr << "creating quadratic features for pairs: ";
+	  VWCOUT << "creating quadratic features for pairs: ";
 	  for (vector<string>::iterator i = global.pairs.begin(); i != global.pairs.end();i++) {
-	    cerr << *i << " ";
+	    VWCOUT << *i << " ";
 	    if (i->length() > 2)
-	      cerr << endl << "warning, ignoring characters after the 2nd.\n";
+	      VWCOUT << endl << "warning, ignoring characters after the 2nd.\n";
 	    if (i->length() < 2) {
-	      cerr << endl << "error, quadratic features must involve two sets.\n";
-	      exit(0);
+	      Rf_error("error, quadratic features must involve two sets.");
 	    }
 	  }
-	  cerr << endl;
+	  VWCOUT << endl;
 	}
     }
 
@@ -353,11 +351,11 @@ po::variables_map parse_args(int argc, char *argv[], boost::program_options::opt
 	}
       if (!global.quiet)
 	{
-	  cerr << "ignoring namespaces beginning with: ";
+	  VWCOUT << "ignoring namespaces beginning with: ";
 	  for (vector<unsigned char>::iterator i = ignore.begin(); i != ignore.end();i++)
-	    cerr << *i << " ";
+	    VWCOUT << *i << " ";
 
-	  cerr << endl;
+	  VWCOUT << endl;
 	}
     }
 
@@ -383,7 +381,7 @@ po::variables_map parse_args(int argc, char *argv[], boost::program_options::opt
 
   if (vm.count("lda") && global.eta > 1.)
     {
-      cerr << "your learning rate is too high, setting it to 1" << endl;
+      VWCOUT << "your learning rate is too high, setting it to 1" << endl;
       global.eta = min(global.eta,1.f);
     }
   if (!vm.count("lda")) 
@@ -423,7 +421,7 @@ po::variables_map parse_args(int argc, char *argv[], boost::program_options::opt
 
   if (global.rank != 0) {
     loss_function = "classic";
-    cerr << "Forcing classic squared loss for matrix factorization" << endl;
+    VWCOUT << "Forcing classic squared loss for matrix factorization" << endl;
   }
 
   r.loss = getLossFunction(loss_function, loss_parameter);
@@ -432,10 +430,10 @@ po::variables_map parse_args(int argc, char *argv[], boost::program_options::opt
 //   global.eta *= pow(par->t, vars.power_t);
 
   if (global.eta_decay_rate != default_decay && global.numpasses == 1)
-    cerr << "Warning: decay_learning_rate has no effect when there is only one pass" << endl;
+    VWCOUT << "Warning: decay_learning_rate has no effect when there is only one pass" << endl;
 
   if (pow((double)global.eta_decay_rate, (double)global.numpasses) < 0.0001 )
-    cerr << "Warning: the learning rate for the last pass is multiplied by: " << pow((double)global.eta_decay_rate, (double)global.numpasses)
+    VWCOUT << "Warning: the learning rate for the last pass is multiplied by: " << pow((double)global.eta_decay_rate, (double)global.numpasses)
 	 << " adjust --decay_learning_rate larger to avoid this." << endl;
 
   //parse_source_args(vm,par,global.quiet,global.numpasses);
@@ -443,21 +441,21 @@ po::variables_map parse_args(int argc, char *argv[], boost::program_options::opt
 
   if (!global.quiet)
     {
-      cerr << "Num weight bits = " << global.num_bits << endl;
-      cerr << "learning rate = " << global.eta << endl;
-      cerr << "initial_t = " << par->t << endl;
-      cerr << "power_t = " << vars.power_t << endl;
+      VWCOUT << "Num weight bits = " << global.num_bits << endl;
+      VWCOUT << "learning rate = " << global.eta << endl;
+      VWCOUT << "initial_t = " << par->t << endl;
+      VWCOUT << "power_t = " << vars.power_t << endl;
       if (global.numpasses > 1)
-	cerr << "decay_learning_rate = " << global.eta_decay_rate << endl;
+	VWCOUT << "decay_learning_rate = " << global.eta_decay_rate << endl;
       if (global.rank > 0)
-	cerr << "rank = " << global.rank << endl;
+	VWCOUT << "rank = " << global.rank << endl;
       if (global.regularization > 0 && global.bfgs)
-	cerr << "regularization = " << global.regularization << endl;
+	VWCOUT << "regularization = " << global.regularization << endl;
     }
 
   if (vm.count("predictions")) {
     if (!global.quiet)
-      cerr << "predictions = " <<  vm["predictions"].as< string >() << endl;
+      VWCOUT << "predictions = " <<  vm["predictions"].as< string >() << endl;
     if (strcmp(vm["predictions"].as< string >().c_str(), "stdout") == 0)
       {
 	push(global.final_prediction_sink, (size_t) 1);//stdout
@@ -467,14 +465,14 @@ po::variables_map parse_args(int argc, char *argv[], boost::program_options::opt
 	const char* fstr = (vm["predictions"].as< string >().c_str());
 	int f = fileno(fopen(fstr,"w"));
 	if (f < 0)
-	  cerr << "Error opening the predictions file: " << fstr << endl;
+	  VWCOUT << "Error opening the predictions file: " << fstr << endl;
 	push(global.final_prediction_sink, (size_t) f);
       }
   }
 
   if (vm.count("raw_predictions")) {
     if (!global.quiet)
-      cerr << "raw predictions = " <<  vm["raw_predictions"].as< string >() << endl;
+      VWCOUT << "raw predictions = " <<  vm["raw_predictions"].as< string >() << endl;
     if (strcmp(vm["raw_predictions"].as< string >().c_str(), "stdout") == 0)
       global.raw_prediction = 1;//stdout
     else
@@ -489,7 +487,7 @@ po::variables_map parse_args(int argc, char *argv[], boost::program_options::opt
   if (vm.count("testonly"))
     {
       if (!global.quiet)
-	cerr << "only testing" << endl;
+	VWCOUT << "only testing" << endl;
       global.training = false;
       if (global.lda > 0)
         global.eta = 0;
@@ -498,13 +496,13 @@ po::variables_map parse_args(int argc, char *argv[], boost::program_options::opt
     {
       global.training = true;
       if (!global.quiet)
-	cerr << "learning_rate set to " << global.eta << endl;
+	VWCOUT << "learning_rate set to " << global.eta << endl;
     }
 
   if (vm.count("predictto"))
     {
       if (!global.quiet)
-	cerr << "predictto = " << vm["predictto"].as< string >() << endl;
+	VWCOUT << "predictto = " << vm["predictto"].as< string >() << endl;
       global.local_prediction = open_socket(vm["predictto"].as< string > ().c_str());
     }
 

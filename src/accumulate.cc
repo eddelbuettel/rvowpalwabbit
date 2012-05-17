@@ -14,6 +14,9 @@ Alekh Agarwal and John Langford, with help Olivier Chapelle.
 #include <stdint.h>
 #include "accumulate.h"
 #include "global_data.h"
+
+#include <Rcpp.h>
+#define VWCOUT Rcpp::Rcout
    
 using namespace std;
 
@@ -89,7 +92,7 @@ float min_elem(float* arr, int length) {
 
 void accumulate_weighted_avg(string master_location, regressor& reg) {
   if(!global.adaptive) {
-    cerr<<"Weighted averaging is implemented only for adaptive gradient, use accumulate_avg instead\n";
+    VWCOUT<<"Weighted averaging is implemented only for adaptive gradient, use accumulate_avg instead\n";
     return;
   }
   uint32_t length = 1 << global.num_bits; //This is size of gradient

@@ -11,6 +11,9 @@ using namespace std;
 #include "loss_functions.h"
 #include "global_data.h"
 
+#include <Rcpp.h>
+#define VWCOUT Rcpp::Rcout
+
 class squaredloss : public loss_function {
 public:
   squaredloss() {
@@ -285,8 +288,9 @@ loss_function* getLossFunction(string funcName, double function_parameter) {
   } else if(funcName.compare("quantile") == 0 || funcName.compare("pinball") == 0 || funcName.compare("absolute") == 0) {
     return new quantileloss(function_parameter);
   } else {
-    cout << "Invalid loss function name: \'" << funcName << "\' Bailing!" << endl;
-    exit(1);
+    Rf_error("Invalid loss function name: \'%s\' Bailing!", funcName.c_str());
+    return NULL; // -Wall
   }
-  cout << "end getLossFunction" << endl;
+  VWCOUT << "end getLossFunction" << endl;
+  return NULL; // -Wall
 }

@@ -52,12 +52,14 @@ gd_vars* vw(int argc, char *argv[])
   if (!global.quiet && !global.bfgs)
     {
       const char * header_fmt = "%-10s %-10s %8s %8s %10s %8s %8s\n";
-      fprintf(stderr, header_fmt,
+      //fprintf(stderr, header_fmt,
+      REprintf(header_fmt,
 	      "average", "since", "example", "example",
 	      "current", "current", "current");
-      fprintf(stderr, header_fmt,
+      //fprintf(stderr, header_fmt,
+      REprintf(header_fmt,
 	      "loss", "last", "counter", "weight", "label", "predict", "features");
-      cerr.precision(5);
+      //cerr.precision(5);
     }
 
   size_t num_threads = global.num_threads();
@@ -111,6 +113,6 @@ gd_vars* vw(int argc, char *argv[])
   ftime(&t_end);
   double net_time = (int) (1000.0 * (t_end.time - t_start.time) + (t_end.millitm - t_start.millitm)); 
   if(!global.quiet && global.span_server != "")
-    cerr<<"Net time taken by process = "<<net_time/(double)(1000)<<" seconds\n";
+    VWCOUT<<"Net time taken by process = "<<net_time/(double)(1000)<<" seconds\n";
   return vars;
 }

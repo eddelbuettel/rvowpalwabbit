@@ -7,6 +7,9 @@ embodied in the content of this file are licensed under the BSD
 #ifndef GD_H
 #define GD_H
 
+#include <Rcpp.h>
+#define VWCOUT Rcpp::Rcout
+
 #include <math.h>
 #include "example.h"
 #include "parse_regressor.h"

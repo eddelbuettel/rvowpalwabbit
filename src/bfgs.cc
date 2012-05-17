@@ -23,6 +23,9 @@ Implementation by Miro Dudik.
 #include "delay_ring.h"
 #include "accumulate.h"
 
+#include <Rcpp.h>
+#define VWCOUT Rcpp::Rcout
+
 using namespace std;
 
 #define CG_EXTRA 1
@@ -94,7 +97,7 @@ float predict_and_gradient(regressor& reg, example* &ec)
 
   if ( isnan(raw_prediction))
     {
-      cout << "you have a NAN!!!!!" << endl;
+      VWCOUT << "you have a NAN!!!!!" << endl;
       fp = 0.;
     }
   
@@ -255,7 +258,8 @@ double direction_magnitude(regressor& reg)
   }
   lastj = 0;
   if (!global.quiet)
-    fprintf(stderr, "%-10e\t%-10e\t%-10s\t%-10s\t%-10s\t",
+    //fprintf(stderr, "%-10e\t%-10e\t%-10s\t%-10s\t%-10s\t",
+    REprintf("%-10e\t%-10e\t%-10s\t%-10s\t%-10s\t",
 	    g1_g1/(importance_weight_sum*importance_weight_sum),
 	    g1_Hg1/importance_weight_sum, "", "", "");
 }
@@ -296,12 +300,14 @@ double direction_magnitude(regressor& reg)
       w[W_GT] = 0;
     }
     if (!global.quiet)
-      fprintf(stderr, "%f\t", beta);
+      //fprintf(stderr, "%f\t", beta);
+      REprintf("%f\t", beta);
     return;
   }
   else {
     if (!global.quiet)
-      fprintf(stderr, "%-10s\t","");
+      //fprintf(stderr, "%-10s\t","");
+      REprintf("%-10s\t","");
   }
 
   double y_s = 0.;
@@ -318,8 +324,7 @@ double direction_magnitude(regressor& reg)
   }
   
   if (y_s <= 0. || y_Hy <= 0.) {
-    cout << "your curvature is not positive, something wrong.  Try adding regularization" << endl;
-    exit(1);
+    Rf_error("your curvature is not positive, something wrong.  Try adding regularization");
   }
 
   rho[0] = 1/y_s;
@@ -414,7 +419,8 @@ double wolfe_eval(regressor& reg, float* mem, double loss_sum, double previous_l
 
   
   if (!global.quiet)
-    fprintf(stderr, "%-10e\t%-10e\t%s%-10f\t%-10f\t", g1_g1/(importance_weight_sum*importance_weight_sum), g1_Hg1/importance_weight_sum, violated ? "*" : " ", wolfe1, wolfe2);
+    //fprintf(stderr, "%-10e\t%-10e\t%s%-10f\t%-10f\t", g1_g1/(importance_weight_sum*importance_weight_sum), g1_Hg1/importance_weight_sum, violated ? "*" : " ", wolfe1, wolfe2);
+    REprintf("%-10e\t%-10e\t%s%-10f\t%-10f\t", g1_g1/(importance_weight_sum*importance_weight_sum), g1_Hg1/importance_weight_sum, violated ? "*" : " ", wolfe1, wolfe2);
   return new_step_cross;
 }
 
@@ -479,8 +485,7 @@ void preconditioner_to_regularizer(regressor& reg, float regularization)
 	  
 	  if ((reg.regularizers != NULL && reg.regularizers[i] == NULL))
 	    {
-	      cerr << global.program_name << ": Failed to allocate weight array: try decreasing -b <bits>" << endl;
-	      exit (1);
+	      Rf_error("%s: Failed to allocate weight array: try decreasing -b <bits>", global.program_name);
 	    }
 	}
       for(uint32_t i = 0; i < length; i++) 
@@ -547,7 +552,8 @@ void work_on_weights(bool &gradient_pass, regressor &reg, string &final_regresso
 		  if (global.regularization > 0.)
 		    loss_sum += add_regularization(reg,global.regularization);
 		  if (!global.quiet)
-		    fprintf(stderr, "%2lu %-f\t", (long unsigned int)current_pass+1, loss_sum / importance_weight_sum);
+		    //fprintf(stderr, "%2lu %-f\t", (long unsigned int)current_pass+1, loss_sum / importance_weight_sum);
+		    REprintf("%2lu %-f\t", (long unsigned int)current_pass+1, loss_sum / importance_weight_sum);
 
 		  double new_step = wolfe_eval(reg, mem, loss_sum, previous_loss_sum, step_size, importance_weight_sum, origin);
   /********************************************************************/
@@ -558,7 +564,8 @@ void work_on_weights(bool &gradient_pass, regressor &reg, string &final_regresso
 		      ftime(&t_end_global);
 		      net_time = (int) (1000.0 * (t_end_global.time - t_start_global.time) + (t_end_global.millitm - t_start_global.millitm)); 
 		      if (!global.quiet)
-			fprintf(stderr, "%-10s\t%-10s\t(revise x %.1f)\t%-10e\t%-.3f\n",
+			//fprintf(stderr, "%-10s\t%-10s\t(revise x %.1f)\t%-10e\t%-.3f\n",
+			REprintf("%-10s\t%-10s\t(revise x %.1f)\t%-10e\t%-.3f\n",
 				"","",new_step/step_size,
 				new_step,
 				net_time/1000.);
@@ -590,7 +597,8 @@ void work_on_weights(bool &gradient_pass, regressor &reg, string &final_regresso
 			ftime(&t_end_global);
 			net_time = (int) (1000.0 * (t_end_global.time - t_start_global.time) + (t_end_global.millitm - t_start_global.millitm)); 
 			if (!global.quiet)
-			  fprintf(stderr, "%-10s\t%-10e\t%-10e\t%-10.3f\n", "", d_mag, step_size, (net_time/1000.));
+			  //fprintf(stderr, "%-10s\t%-10e\t%-10e\t%-10.3f\n", "", d_mag, step_size, (net_time/1000.));
+			  REprintf("%-10s\t%-10e\t%-10e\t%-10.3f\n", "", d_mag, step_size, (net_time/1000.));
 			predictions.erase();
 			update_weight(final_regressor_name, reg, step_size, current_pass);		     		      
 		      }
@@ -610,8 +618,7 @@ void work_on_weights(bool &gradient_pass, regressor &reg, string &final_regresso
 		  float dd = derivative_in_direction(reg, mem, origin);
 		  if (curvature == 0. && dd != 0.)
 		    {
-		      cout << "your curvature is 0, something wrong.  Try adding regularization" << endl;
-		      exit(1);
+		      Rf_error("your curvature is 0, something wrong.  Try adding regularization");
 		    }
 		  step_size = - dd/curvature;
 		  float d_mag = direction_magnitude(reg);
@@ -621,7 +628,8 @@ void work_on_weights(bool &gradient_pass, regressor &reg, string &final_regresso
 		  ftime(&t_end_global);
 		  net_time = (int) (1000.0 * (t_end_global.time - t_start_global.time) + (t_end_global.millitm - t_start_global.millitm)); 
 		  if (!global.quiet)
-		    fprintf(stderr, "%-e\t%-e\t%-e\t%-.3f\n", curvature / importance_weight_sum, d_mag, step_size,(net_time/1000.));
+		    //fprintf(stderr, "%-e\t%-e\t%-e\t%-.3f\n", curvature / importance_weight_sum, d_mag, step_size,(net_time/1000.));
+		    REprintf("%-e\t%-e\t%-e\t%-.3f\n", curvature / importance_weight_sum, d_mag, step_size,(net_time/1000.));
 		  gradient_pass = true;
 		}//now start computing derivatives.
 }
@@ -653,7 +661,8 @@ void setup_bfgs(gd_thread_params& t)
 
   if (!global.quiet) 
     {
-      fprintf(stderr, "m = %d\nAllocated %luM for weights and mem\n", m, (long unsigned int)global.length()*(sizeof(float)*(mem_stride)+sizeof(weight)*global.stride) >> 20);
+      //fprintf(stderr, "m = %d\nAllocated %luM for weights and mem\n", m, (long unsigned int)global.length()*(sizeof(float)*(mem_stride)+sizeof(weight)*global.stride) >> 20);
+      REprintf("m = %d\nAllocated %luM for weights and mem\n", m, (long unsigned int)global.length()*(sizeof(float)*(mem_stride)+sizeof(weight)*global.stride) >> 20);
     }
 
   net_time = 0.0;
@@ -662,9 +671,10 @@ void setup_bfgs(gd_thread_params& t)
   if (!global.quiet)
     {
       const char * header_fmt = "%2s %-10s\t%-10s\t%-10s\t %-10s\t%-10s\t%-10s\t%-10s\t%-10s\t%-10s\t%-10s\n";
-      fprintf(stderr, header_fmt,
+      //fprintf(stderr, header_fmt,
+      REprintf(header_fmt,
 	      "##", "avg. loss", "der. mag.", "d. m. cond.", "wolfe1", "wolfe2", "mix fraction", "curvature", "dir. magnitude", "step size", "time");
-      cerr.precision(5);
+      //cerr.precision(5);
     }
 
   bool output_regularizer = false;
@@ -700,7 +710,8 @@ void setup_bfgs(gd_thread_params& t)
 		if (global.regularization > 0.)
 		  loss_sum += add_regularization(reg,global.regularization);
 		if (!global.quiet)
-		  fprintf(stderr, "%2lu %-f\t", (long unsigned int)current_pass+1, loss_sum / importance_weight_sum);
+		  //fprintf(stderr, "%2lu %-f\t", (long unsigned int)current_pass+1, loss_sum / importance_weight_sum);
+		  REprintf("%2lu %-f\t", (long unsigned int)current_pass+1, loss_sum / importance_weight_sum);
 		
 		previous_loss_sum = loss_sum;
 		loss_sum = 0.;
@@ -774,7 +785,8 @@ void setup_bfgs(gd_thread_params& t)
 			    current_pass, curvature, mem, predictions,
 			    example_number, rho, alpha, lastj, origin);
 	  if (!global.quiet)
-	    fprintf(stderr, "\n");
+	    //fprintf(stderr, "\n");
+	    REprintf("\n");
 	  break;
 	}
       else 
@@ -791,8 +803,8 @@ void setup_bfgs(gd_thread_params& t)
   net_time = (int) (1000.0 * (t_end_global.time - t_start_global.time) + (t_end_global.millitm - t_start_global.millitm)); 
   if (!global.quiet)
     {
-      cerr<<"Net time spent in communication = "<<get_comm_time()/(float)1000<<" seconds\n";
-      cerr<<"Net time spent = "<<(float)net_time/(float)1000<<" seconds\n";
+      VWCOUT<<"Net time spent in communication = "<<get_comm_time()/(float)1000<<" seconds\n";
+      VWCOUT<<"Net time spent = "<<(float)net_time/(float)1000<<" seconds\n";
     }
 
   if (global.local_prediction > 0)

@@ -1,3 +1,4 @@
+#include <cstring>		// bzero()
 #include <pthread.h>
 #include <vector>
 #include <netdb.h>
@@ -48,7 +49,7 @@ size_t find_split(size_t number)
           d_2 = 1 << a;
         }
       if (d_1 * d_2 < number)
-        cerr << "warning: number of remote hosts is not a factor of 2, so some are wasted" << endl;
+        VWCOUT << "warning: number of remote hosts is not a factor of 2, so some are wasted" << endl;
       return log_2;
     }
   return 0;
@@ -123,7 +124,7 @@ void* send_thread(void*)
       if ((ec = get_example(0)) != NULL)//semiblocking operation.
         {
 	  if (finished) 
-	    cout << "NOT POSSIBLE! " << endl;
+	    VWCOUT << "NOT POSSIBLE! " << endl;
           label_data* ld = (label_data*)ec->ld;
           set_minmax(ld->label);
           for (size_t i = 0; i < d_1; i++)

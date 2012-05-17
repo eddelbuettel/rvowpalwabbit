@@ -1,9 +1,13 @@
+#include <cstring>		// bzero()
 #include <pthread.h>
 #include <stdio.h>
 #include <float.h>
 #include "global_data.h"
 #include "multisource.h"
 #include "message_relay.h"
+
+#include <Rcpp.h>
+#define VWCOUT Rcpp::Rcout
 
 using namespace std;
 
@@ -31,27 +35,27 @@ void print_result(int f, float res, float weight, v_array<char> tag)
       ssize_t t;
       t = write(f, temp, num);
       if (t != num) 
-	cerr << "write error" << endl;
+	VWCOUT << "write error" << endl;
       if (tag.begin != tag.end){
 	temp[0] = ' ';
 	t = write(f, temp, 1);
 	if (t != 1)
-	  cerr << "write error" << endl;
+	  VWCOUT << "write error" << endl;
 	t = write(f, tag.begin, sizeof(char)*tag.index());
 	if (t != (ssize_t) (sizeof(char)*tag.index()))
-	  cerr << "write error" << endl;
+	  VWCOUT << "write error" << endl;
       }
       if(global.active && weight >= 0)
 	{
 	  num = sprintf(temp, " %f", weight);
 	  t = write(f, temp, num);
 	  if (t != num)
-	    cerr << "write error" << endl;
+	    VWCOUT << "write error" << endl;
 	}
       temp[0] = '\n';
       t = write(f, temp, 1);     
       if (t != 1) 
-	cerr << "write error" << endl;
+	VWCOUT << "write error" << endl;
     }
 }
 
@@ -67,28 +71,28 @@ void print_lda_result(int f, float* res, float weight, v_array<char> tag)
 	  num = sprintf(temp, "%f ", res[k]);
 	  t = write(f, temp, num);
 	  if (t != num)
-	    cerr << "write error" << endl;
+	    VWCOUT << "write error" << endl;
 	}
       if (tag.begin != tag.end){
 	temp[0] = ' ';
 	t = write(f, temp, 1);
 	if (t != 1)
-	  cerr << "write error" << endl;
+	  VWCOUT << "write error" << endl;
 	t = write(f, tag.begin, sizeof(char)*tag.index());
 	if (t != (ssize_t) (sizeof(char)*tag.index()))
-	  cerr << "write error" << endl;
+	  VWCOUT << "write error" << endl;
       }
       if(global.active && weight >= 0)
 	{
 	  num = sprintf(temp, " %f", weight);
 	  t = write(f, temp, num);
 	  if (t != num)
-	    cerr << "write error" << endl;
+	    VWCOUT << "write error" << endl;
 	}
       temp[0] = '\n';
       t = write(f, temp, 1);
       if (t != 1)
-	cerr << "write error" << endl;
+	VWCOUT << "write error" << endl;
     }
 }
 

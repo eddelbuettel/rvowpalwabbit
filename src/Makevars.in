@@ -2,7 +2,6 @@ PKG_CXXFLAGS=@CXXFLAGS@ -I. -D_FILE_OFFSET_BITS=64
 PKG_LIBS=@LDFLAGS@ -lz -lpthread
 
 #CXXFLAGS=  -g0 -O3 -Wall -pipe -Wno-variadic-macros  #-pedantic 
-
 #PKG_CXXFLAGS += -Wall -O3 -fomit-frame-pointer -ffast-math -fno-strict-aliasing -D_FILE_OFFSET_BITS=64 
 #PKG_LIBS=`$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"` 
 

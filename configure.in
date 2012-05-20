@@ -429,10 +429,6 @@ if test "${GXX}" = yes; then
     ## determine g++ versions
     gxx_version=`${CXX} -v 2>&1 | tail -1 | cut -d ' ' -f 3 | cut -d '.' -f 1,2`
 
-    ## set a least-common denominator (and BDR does not like -march=native as there
-    ## can be LAN-wide installations over different architectures
-    MARCH_FLAG="-mtune=core2"
-
     ## now test
     case ${gxx_version} in
         1.*|2.*|3.*|4.0|4.1)
@@ -440,16 +436,20 @@ if test "${GXX}" = yes; then
 	     AC_MSG_ERROR([Please use a different compiler.])   
         ;;
     #   4.2)
-    #         ## gcc/g++-4.2 cannot do -march=native
+    #         ## gcc/g++-4.2 cannot do -march=native, and can't do -march=nocona on PPC. Arrggh.
     #         MARCH_FLAG="-march=nocona"
     #    ;;
-	#4.3|4.4|4.5|4.6|4.7|4.8|4.9|5.*)
-    #         ## use -march=native where we can
-    #         MARCH_FLAG="-march=native"
-    #    ;;
+	4.3|4.4|4.5|4.6|4.7|4.8|4.9|5.*)
+              ## use -march=native where we can
+    	      #  MARCH_FLAG="-march=native"
+	      ## set a least-common denominator (and BDR does not like -march=native as there
+	      ## can be LAN-wide installations over different architectures
+	      MARCH_FLAG="-mtune=core2"
+        ;;
 	esac
     ## these flags are used upstream by Vowpal Wabbit; CRAN does not want them unconditionally in src/Makevars
-    ## Fedora 16 cannot cope with -ffast-math in C++ code it seems, removing -ffast-math    AC_SUBST([CXXFLAGS],["${CXXFLAGS} -g0 ${MARCH_FLAG} -Wall -O3 -fomit-frame-pointer -fno-strict-aliasing"])
+    ## Fedora 16 cannot cope with -ffast-math in C++ code it seems, removing -ffast-math    
+    AC_SUBST([CXXFLAGS],["${CXXFLAGS} -g0 ${MARCH_FLAG} -Wall -O3 -fomit-frame-pointer -fno-strict-aliasing"])
 fi
 
 AC_SUBST([CXXFLAGS],["${BOOST_CPPFLAGS} ${CXXFLAGS}"])

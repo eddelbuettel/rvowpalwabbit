@@ -1,9 +1,12 @@
-2012-05-17  Dirk Eddelbuettel  <edd@debian.org>
+2012-05-20  Dirk Eddelbuettel  <edd@debian.org>
 
 	* DESCRIPTION: Version 0.0.5
 
 	* src/*: Massively invasive changes to get rid of stdout, stderr,
 	std::cout, std::cerr and exit() as now required by CRAN
+
+	* configure.in: Changed per CRAN request ever where this conflicts
+	with preferences by upstream: no more -ffast-math and -march=native
 
 	* cleanup: Also remove src/symbols.rds
 

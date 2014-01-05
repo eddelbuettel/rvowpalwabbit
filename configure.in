@@ -11,7 +11,7 @@
 AC_PREREQ(2.50)
 
 # Process this file with autoconf to produce a configure script.
-AC_INIT(RVowpalWabbit, 0.0.4)
+AC_INIT(RVowpalWabbit, 0.0.5)
 
 # We are using C++ (commented out now as also done below by Boost tests)
 AC_LANG(C++)
@@ -370,6 +370,16 @@ AC_DEFUN([AX_BOOST_PROGRAM_OPTIONS], [
                 for libextension in `ls $BOOSTLIBDIR/libboost_program_options*.so* 2>/dev/null | 
 										sed 's,.*/,,' | sed -e 's;^lib\(boost_program_options.*\)\.so.*$;\1;'` \
                                     `ls $BOOSTLIBDIR/libboost_program_options*.a* 2>/dev/null | 
+										sed 's,.*/,,' | sed -e 's;^lib\(boost_program_options.*\)\.a*$;\1;'` ; do
+                	ax_lib=${libextension}
+				    AC_CHECK_LIB($ax_lib, exit,
+                                 [BOOST_PROGRAM_OPTIONS_LIB="-l$ax_lib"; AC_SUBST(BOOST_PROGRAM_OPTIONS_LIB) link_program_options="yes"; break],
+                                 [link_program_options="no"])
+				done
+
+                for libextension in `ls $BOOSTLIBDIR/*/libboost_program_options*.so* 2>/dev/null | 
+										sed 's,.*/,,' | sed -e 's;^lib\(boost_program_options.*\)\.so.*$;\1;'` \
+                                    `ls $BOOSTLIBDIR/*/libboost_program_options*.a* 2>/dev/null | 
 										sed 's,.*/,,' | sed -e 's;^lib\(boost_program_options.*\)\.a*$;\1;'` ; do
                 	ax_lib=${libextension}
 				    AC_CHECK_LIB($ax_lib, exit,

@@ -128,7 +128,7 @@ bool command_example(example* ec, gd_thread_params* params) {
 
 float finalize_prediction(float ret) 
 {
-  if ( isnan(ret))
+  if ( ISNAN(ret))
     {
       VWCOUT << "you have a NAN!!!!!" << endl;
       return 0.;

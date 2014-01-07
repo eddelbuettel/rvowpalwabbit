@@ -1,10 +1,14 @@
-2014-01-05  Dirk Eddelbuettel  <edd@debian.org>
+2014-01-06  Dirk Eddelbuettel  <edd@debian.org>
 
 	* DESCRIPTION: Version 0.0.6
 
-	* configure.in (BOOST_PROGRAM_OPTIONS_LIB): Add an additional block
-	now that Debian has Boost libraries in /usr/lib/${ARCH}/ to permit
-	bi-arch installations
+	* configure.in: Update autoconf macros ax_boost_base and
+	ax_boost_program_options to current versions in order to also find
+	Boost libraries in /usr/lib/${ARCH}/ under current Debian / Ubuntu
+
+	* config.guess: Added to keep configure happy
+	* config.sub: Idem
+	* install-sh: Idem
 
 2012-05-20  Dirk Eddelbuettel  <edd@debian.org>
 

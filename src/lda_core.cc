@@ -286,7 +286,7 @@ vexpdigammify_2(float*       gamma,
 #define myexpdigammify_2 vexpdigammify_2
 
 #else
-#warning "lda IS NOT using sse instructions"
+    // # warning "lda IS NOT using sse instructions"
 #define myexpdigammify expdigammify
 #define myexpdigammify_2 expdigammify_2
 

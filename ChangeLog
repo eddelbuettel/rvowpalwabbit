@@ -1,3 +1,7 @@
+2015-10-10  Dirk Eddelbuettel  <edd@debian.org>
+
+	* src/lda_core.cc: Do not use #warning as it is gcc specific
+
 2015-10-09  Dirk Eddelbuettel  <edd@debian.org>
 
 	* DESCRIPTION: Updates to DESCRIPTION (per R CMD check)

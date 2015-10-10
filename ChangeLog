@@ -2,6 +2,9 @@
 
 	* src/lda_core.cc: Do not use #warning as it is gcc specific
 
+	* src/parser.cc: Replace rand() with drand48() [properly scaled]
+	* src/parse_regressor.cc: Ditto
+
 2015-10-09  Dirk Eddelbuettel  <edd@debian.org>
 
 	* DESCRIPTION: Updates to DESCRIPTION (per R CMD check)

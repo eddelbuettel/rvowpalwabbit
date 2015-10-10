@@ -834,7 +834,8 @@ void start_parser(size_t num_threads, parser* pf)
     {
       if(random_nos.index() < global.ngram)
         for (size_t i = 0; i < global.ngram; i++)
-	  push(random_nos, (size_t)rand());
+            //push(random_nos, (size_t) rand());
+            push(random_nos, (size_t) drand48()*RAND_MAX);
     }      
 
   examples = (example*)calloc(global.ring_size, sizeof(example));

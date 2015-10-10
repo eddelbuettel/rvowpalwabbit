@@ -40,7 +40,9 @@ void initialize_regressor(regressor &r)
 	{
 	  if (global.rank > 0)
 	    for (size_t j = 0; j < global.stride*length/num_threads; j++)
-	      r.weight_vectors[i][j] = (double) 0.1 * rand() / ((double) RAND_MAX + 1.0); //drand48()/10 - 0.05;
+                //r.weight_vectors[i][j] = (double) 0.1 * rand() / ((double) RAND_MAX + 1.0); //drad48()/10 - 0.05;
+                r.weight_vectors[i][j] = (double) 0.1 * drand48() - 0.05; //drand48()/10 - 0.05;
+
 	  else
 	    for (size_t j = 0; j < length/num_threads; j++)
 	      r.weight_vectors[i][j] = drand48() - 0.5;

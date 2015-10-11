@@ -1,3 +1,7 @@
+2015-10-12  Dirk Eddelbuettel  <edd@debian.org>
+
+	* src/R_vw.cpp: Comment-out gd.h header which is not needed
+
 2015-10-11  Dirk Eddelbuettel  <edd@debian.org>
 
 	* .travis.yml: Updated to use sudo, and install Rcpp via apt

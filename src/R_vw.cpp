@@ -3,7 +3,7 @@
 #include <Rcpp.h>
 
 #include "vw.h"
-#include "gd.h"
+//#include "gd.h"
 
 // std::string to char* pointer conversion
 inline char *string2charptr(const std::string & s) { return const_cast<char*>(s.c_str()); }

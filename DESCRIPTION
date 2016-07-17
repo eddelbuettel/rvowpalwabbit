@@ -1,31 +1,18 @@
 Package: RVowpalWabbit
 Title: R Interface to the Vowpal Wabbit
-Version: 0.0.6.1
-Date: 2015-10-09
+Version: 0.0.7
+Date: 2016-07-17
 Maintainer: Dirk Eddelbuettel <edd@debian.org>
 Author: Dirk Eddelbuettel <edd@debian.org>
-Description: R interface to Vowpal Wabbit fast out-of-core learning system
- The Vowpal Wabbit (VW) project is a fast out-of-core learning system
- sponsored by Yahoo! Research and written by John Langford along with a
- number of contributors.
- .
- There are two ways to have a fast learning algorithm: (a) start with a slow
- algorithm and speed it up, or (b) build an intrinsically fast learning
- algorithm. This project is about approach (b), and it has reached a state
- where it may be useful to others as a platform for research and
- experimentation.
- .
- There are several optimization algorithms available with the baseline being
- sparse gradient descent (GD) on a loss function (several are available). The
- code should be easily usable. Its only external dependence is on the Boost
- library, which is often installed by default.
- .
- This R package does not include the distributed computing implementation of
- the cluster/ directory of the upstream sources.  Use of the software as a
- network servie is also not directly supported as the aim is a simpler direct
- call from R for validation and comparison.
+Description: The 'Vowpal Wabbit' project is a fast out-of-core learning
+ system sponsored by Microsoft Research (having started at Yahoo! Research)
+ and written by John Langford along with a number of contributors. This R
+ package does not include the distributed computing implementation of the
+ cluster/ directory of the upstream sources. Use of the software as a network
+ service is also not directly supported as the aim is a simpler direct call
+ from R for validation and comparison. 
 Depends: R (>= 2.12.0)
-Imports: Rcpp (>= 0.11.0)
+Imports: Rcpp
 LinkingTo: Rcpp
 SystemRequirements: The Boost 'program_options' library (http://boost.org) is required.
 OS_type: unix

@@ -140,7 +140,7 @@ void all_reduce_init(string master_location, size_t unique_id, size_t total, siz
     bool listening = false;
     while(!listening)
       {
-	if (bind(sock,(sockaddr*)&address, sizeof(address)) < 0)
+	if (::bind(sock,(sockaddr*)&address, sizeof(address)) < 0)
 	  if (errno == EADDRINUSE)
 	    {
 	      netport = htons(ntohs(netport)+1);

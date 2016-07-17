@@ -300,7 +300,7 @@ void save_predictor(string reg_name, size_t current_pass)
     char* filename = new char[reg_name.length()+4];
     sprintf(filename,"%s.%lu",reg_name.c_str(),(long unsigned)current_pass);
     dump_regressor(string(filename), *(global.reg));
-    delete filename;
+    delete[] filename;
   }
 }  
 

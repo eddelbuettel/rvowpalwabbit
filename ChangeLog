@@ -1,5 +1,7 @@
 2016-10-16  Dirk Eddelbuettel  <edd@debian.org>
 
+	* DESCRIPTION: Version 0.0.8
+
 	* tests/test2.r: Write prediction to tempdir() not /tmp
 	* tests/test6.r: Ditto
 	* tests/test8.r: Ditto

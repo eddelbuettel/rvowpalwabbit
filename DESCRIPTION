@@ -1,6 +1,6 @@
 Package: RVowpalWabbit
 Title: R Interface to the Vowpal Wabbit
-Version: 0.0.7.1
+Version: 0.0.8
 Date: 2016-10-16
 Maintainer: Dirk Eddelbuettel <edd@debian.org>
 Author: Dirk Eddelbuettel <edd@debian.org>

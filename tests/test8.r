@@ -11,7 +11,7 @@ setwd( system.file("test", package="RVowpalWabbit") )
 test8 <- c("-t",
            "-i", "models/0002c.model",
            "-d", "train-sets/0002.dat",
-           "-p", "/tmp/0002c.predict")
+           "-p", file.path(tempdir(), "0002c.predict.tmp"))
 
 res <- vw(test8, quiet=FALSE)
 print(res)

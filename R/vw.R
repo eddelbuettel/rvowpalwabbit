@@ -66,5 +66,5 @@
 vw <- function(args=.test3, quiet=TRUE) {
     args <- c("Rvw", args)              # provide an argv[0] for program_options
     if (quiet) args <- c(args, "--quiet")
-    .Call("Rvw", args, package="RVowpalWabbit")
+    Rvw(args)
 }

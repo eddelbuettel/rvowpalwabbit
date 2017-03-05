@@ -1,5 +1,5 @@
 
-useDynLib("RVowpalWabbit")
+useDynLib("RVowpalWabbit", .registration=TRUE)
 
 importFrom("Rcpp", "evalCpp")
-exportPattern("^[[:alpha:]]+")
+export("vw")

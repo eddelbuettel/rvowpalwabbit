@@ -60,13 +60,10 @@ vw(args, quiet=TRUE)
 
   library(RVowpalWabbit)
 
-  ## change to 'test' directory of package
-  setwd( system.file("test", package="RVowpalWabbit") )
-
   # Test 3: without -d, training only
   # {VW} train-sets/0002.dat    -f models/0002.model
-  test3 <- c("-t", "train-sets/0002.dat",
-             "-f", "models/0002.model")
+  test3 <- c("-t", system.file("test", "train-sets", "0002.dat", package="RVowpalWabbit"),
+             "-f", system.file("test", "models", "0002.model", package="RVowpalWabbit"))
 
   res <- vw(test3)
   res

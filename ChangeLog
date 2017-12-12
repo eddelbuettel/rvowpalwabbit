@@ -2,12 +2,14 @@
 
 	* DESCRIPTION (Version, Date): Release 0.0.10
 
-	* tests/test1.r: Refer to same files directly
-	* test2.r: Idem
-	* test5.r: Idem
-	* test6.r: Idem
-	* test7.r: Idem
-	* test8.r: Idem
+	* man/vw.Rd: Refer to same files directly
+	* tests/test1.r: Idem
+	* tests/test2.r: Idem
+	* tests/test5.r: Idem
+	* tests/test6.r: Idem
+	* tests/test7.r: Idem
+	* tests/test8.r: Idem
+	* demo/vw.R: Idem
 
 2017-03-05  Dirk Eddelbuettel  <edd@debian.org>
 

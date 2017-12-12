@@ -1,3 +1,12 @@
+2017-12-12  Dirk Eddelbuettel  <edd@debian.org>
+
+	* tests/test1.r: Refer to same files directly
+	* test2.r: Idem
+	* test5.r: Idem
+	* test6.r: Idem
+	* test7.r: Idem
+	* test8.r: Idem
+
 2017-03-05  Dirk Eddelbuettel  <edd@debian.org>
 
 	* DESCRIPTION (Version, Date): Release 0.0.9

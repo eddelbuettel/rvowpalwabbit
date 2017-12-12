@@ -1,7 +1,7 @@
 Package: RVowpalWabbit
 Title: R Interface to the Vowpal Wabbit
-Version: 0.0.9
-Date: 2017-03-05
+Version: 0.0.9.1
+Date: 2017-12-12
 Maintainer: Dirk Eddelbuettel <edd@debian.org>
 Author: Dirk Eddelbuettel <edd@debian.org>
 Description: The 'Vowpal Wabbit' project is a fast out-of-core learning

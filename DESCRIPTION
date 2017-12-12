@@ -10,7 +10,10 @@ Description: The 'Vowpal Wabbit' project is a fast out-of-core learning
  package does not include the distributed computing implementation of the
  cluster/ directory of the upstream sources. Use of the software as a network
  service is also not directly supported as the aim is a simpler direct call
- from R for validation and comparison. 
+ from R for validation and comparison. Note that this package contains an
+ embedded older version of 'Vowpal Wabbit'. The package 'rvw' at the GitHub
+ repo <https://github.com/eddelbuettel/rvw> can provide an alternative using 
+ an external 'Vowpal Wabbit' library installation.
 Depends: R (>= 2.12.0)
 Imports: Rcpp
 LinkingTo: Rcpp

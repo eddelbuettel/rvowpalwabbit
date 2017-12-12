@@ -1,5 +1,7 @@
 2017-12-12  Dirk Eddelbuettel  <edd@debian.org>
 
+	* DESCRIPTION (Version, Date): Release 0.0.10
+
 	* tests/test1.r: Refer to same files directly
 	* test2.r: Idem
 	* test5.r: Idem

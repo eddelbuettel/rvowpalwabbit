@@ -1,8 +1,20 @@
+2018-01-23  Dirk Eddelbuettel  <edd@debian.org>
+
+	* DESCRIPTION (Version, Date): New minor version
+
+	* tests/test1.r: Set --cache_file to be witin tempdir() [CRAN request]
+	* tests/test2.r: Idem
+	* tests/test5.r: Idem
+	* tests/test6.r: Idem
+	* tests/test8.r: Idem
+	* demo/vw.R: Idem
+ 	* man/vw.Rd: Idem (in example)
+
 2017-12-12  Dirk Eddelbuettel  <edd@debian.org>
 
 	* DESCRIPTION (Version, Date): Release 0.0.10
 
-	* man/vw.Rd: Refer to same files directly
+	* man/vw.Rd: Refer to some files directly [CRAN request]
 	* tests/test1.r: Idem
 	* tests/test2.r: Idem
 	* tests/test5.r: Idem

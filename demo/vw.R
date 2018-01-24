@@ -9,6 +9,7 @@ test1 <- c("-b", "17",
            "--power_t", "1",
            "-d", system.file("test", "train-sets", "0001.dat", package="RVowpalWabbit"),
            "-f", system.file("test", "models", "0001.model", package="RVowpalWabbit"),
+           "--cache_file", file.path(tempdir(), "0001.cache"),
            "-c",
            "--passes", "2",
            "--compressed",
@@ -19,16 +20,19 @@ test1 <- c("-b", "17",
 # {VW} -t train-sets/0001.dat -i models/0001.model -p 001.predict.tmp
 test2 <- c("-t", system.file("test", "train-sets", "0001.dat", package="RVowpalWabbit"),
            "-i", system.file("test", "models", "0001.model", package="RVowpalWabbit"),
+           "--cache_file", file.path(tempdir(), "0001.cache"),
            "-p", file.path(tempdir(), "0001.predict.tmp"))
 
 # Test 3: without -d, training only
 # {VW} train-sets/0002.dat    -f models/0002.model
 test3 <- c("-t", system.file("test", "train-sets", "0002.dat", package="RVowpalWabbit"),
+           "--cache_file", file.path(tempdir(), "0002.cache"),
            "-f", system.file("test", "models", "0002.model", package="RVowpalWabbit"))
 
 # Test 4: same, with -d
 # {VW} -d train-sets/0002.dat    -f models/0002.model
 test4 <- c("-d", system.file("test", "train-sets", "0002.dat", package="RVowpalWabbit"),
+           "--cache_file", file.path(tempdir(), "0002.cache"),
            "-f", system.file("test", "models", "0002.model", package="RVowpalWabbit"))
 
 # Test 5: add -q .., adaptive, and more (same input, different outputs)
@@ -39,6 +43,7 @@ test5 <- c("--initial_t", "1",
            "-q", "Tf",
            "-q", "ff",
            "-f", system.file("test", "models", "0002a.model", package="RVowpalWabbit"),
+           "--cache_file", file.path(tempdir(), "0002a.cache"),
            system.file("test", "train-sets", "0002.dat", package="RVowpalWabbit"))
 
 # Test 6: run predictions on Test 4 model
@@ -46,12 +51,14 @@ test5 <- c("--initial_t", "1",
 # {VW} -t -i models/0002.model -d train-sets/0002.dat -p 0002b.predict
 test6 <- c("-t", "-i", system.file("test", "models", "0002.model", package="RVowpalWabbit"),
            "-d", system.file("test", "train-sets", "0002.dat", package="RVowpalWabbit"),
+           "--cache_file", file.path(tempdir(), "0002b.cache"),
            "-p", file.path(tempdir(), "0002b.predict.tmp"))
 
 # Test 7: using -q and multiple threads
 # {VW} --adaptive -q ff -f models/0002c.model train-sets/0002.dat
 test7 <- c("--adaptive", "-q", "ff",
            "-f", system.file("test", "models", "0002c.model", package="RVowpalWabbit"),
+           "--cache_file", file.path(tempdir(), "0002c.cache"),
            system.file("test", "train-sets", "0002.dat", package="RVowpalWabbit"))
 
 
@@ -60,6 +67,7 @@ test7 <- c("--adaptive", "-q", "ff",
 test8 <- c("-t",
            "-i", system.file("test", "models", "0002c.model", package="RVowpalWabbit"),
            "-d", system.file("test", "train-sets", "0002.dat", package="RVowpalWabbit"),
+           "--cache_file", file.path(tempdir(), "0002c.cache"),
            "-p", file.path(tempdir(), "0002c.predict.tmp"))
 
 
@@ -70,6 +78,3 @@ alltests <- list(test1, test2, test3, test4, test5, test6, test7, test8)
 res <- do.call(rbind, lapply(alltests, vw) )    # run the eight tests
 
 print(res)
-
-
-

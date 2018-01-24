@@ -10,6 +10,7 @@ test1 <- c("-b", "17",
            "--power_t", "1",
            "-d", system.file("test", "train-sets", "0001.dat", package="RVowpalWabbit"),
            "-f", system.file("test", "models", "0001.model", package="RVowpalWabbit"),
+           "--cache_file", file.path(tempdir(), "0001.cache"),
            "-c",
            "--passes", "2",
            "--compressed",
@@ -18,3 +19,4 @@ test1 <- c("-b", "17",
 
 res <- vw(test1, quiet=FALSE)
 print(res)
+

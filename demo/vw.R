@@ -8,7 +8,7 @@ test1 <- c("-b", "17",
            "--initial_t", "128000",
            "--power_t", "1",
            "-d", system.file("test", "train-sets", "0001.dat", package="RVowpalWabbit"),
-           "-f", system.file("test", "models", "0001.model", package="RVowpalWabbit"),
+           "-f", file.path(tempdir(), "0001.model"),
            "--cache_file", file.path(tempdir(), "0001.cache"),
            "-c",
            "--passes", "2",
@@ -27,13 +27,13 @@ test2 <- c("-t", system.file("test", "train-sets", "0001.dat", package="RVowpalW
 # {VW} train-sets/0002.dat    -f models/0002.model
 test3 <- c("-t", system.file("test", "train-sets", "0002.dat", package="RVowpalWabbit"),
            "--cache_file", file.path(tempdir(), "0002.cache"),
-           "-f", system.file("test", "models", "0002.model", package="RVowpalWabbit"))
+           "-f", file.path(tempdir(), "0002.model"))
 
 # Test 4: same, with -d
 # {VW} -d train-sets/0002.dat    -f models/0002.model
 test4 <- c("-d", system.file("test", "train-sets", "0002.dat", package="RVowpalWabbit"),
            "--cache_file", file.path(tempdir(), "0002.cache"),
-           "-f", system.file("test", "models", "0002.model", package="RVowpalWabbit"))
+           "-f", file.path(tempdir(), "0002.model"))
 
 # Test 5: add -q .., adaptive, and more (same input, different outputs)
 # {VW} --initial_t 1 --power_t 0.5 --adaptive -q Tf -q ff -f models/0002a.model train-sets/0002.dat
@@ -42,7 +42,7 @@ test5 <- c("--initial_t", "1",
            "--adaptive",
            "-q", "Tf",
            "-q", "ff",
-           "-f", system.file("test", "models", "0002a.model", package="RVowpalWabbit"),
+           "-f", file.path(tempdir(), "0002a.model"),
            "--cache_file", file.path(tempdir(), "0002a.cache"),
            system.file("test", "train-sets", "0002.dat", package="RVowpalWabbit"))
 
@@ -57,7 +57,7 @@ test6 <- c("-t", "-i", system.file("test", "models", "0002.model", package="RVow
 # Test 7: using -q and multiple threads
 # {VW} --adaptive -q ff -f models/0002c.model train-sets/0002.dat
 test7 <- c("--adaptive", "-q", "ff",
-           "-f", system.file("test", "models", "0002c.model", package="RVowpalWabbit"),
+           "-f", file.path(tempdir(), "0002c.model"),
            "--cache_file", file.path(tempdir(), "0002c.cache"),
            system.file("test", "train-sets", "0002.dat", package="RVowpalWabbit"))
 

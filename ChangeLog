@@ -1,3 +1,11 @@
+2018-01-30  Dirk Eddelbuettel  <edd@debian.org>
+
+	* tests/test1.r: Output written by -f to be witin tempdir() [CRAN]
+	* tests/test5.r: Idem
+	* tests/test7.r: Idem
+	* demo/vw.R: Idem
+	* man/vw.Rd: Idem (in example)
+
 2018-01-23  Dirk Eddelbuettel  <edd@debian.org>
 
 	* DESCRIPTION (Version, Date): Release 0.0.11
@@ -8,7 +16,7 @@
 	* tests/test6.r: Idem
 	* tests/test8.r: Idem
 	* demo/vw.R: Idem
- 	* man/vw.Rd: Idem (in example)
+	* man/vw.Rd: Idem (in example)
 
 2017-12-12  Dirk Eddelbuettel  <edd@debian.org>
 

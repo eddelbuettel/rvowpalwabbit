@@ -9,7 +9,7 @@ test5 <- c("--initial_t", "1",
            "--adaptive",
            "-q", "Tf",
            "-q", "ff",
-           "-f", system.file("test", "models", "0002a.model", package="RVowpalWabbit"),
+           "-f", file.path(tempdir(), "0002a.model"),
            "--cache_file", file.path(tempdir(), "0002a.cache"),
            system.file("test", "train-sets", "0002.dat", package="RVowpalWabbit"))
 

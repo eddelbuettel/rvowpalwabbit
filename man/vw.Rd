@@ -63,7 +63,7 @@ vw(args, quiet=TRUE)
   # Test 3: without -d, training only
   # {VW} train-sets/0002.dat    -f models/0002.model
   test3 <- c("-t", system.file("test", "train-sets", "0002.dat", package="RVowpalWabbit"),
-             "-f", system.file("test", "models", "0002.model", package="RVowpalWabbit"),
+             "-f", file.path(tempdir(), "0002.model"),
              "--cache_file", file.path(tempdir(), "0002.cache"))
 
   res <- vw(test3)

@@ -569,11 +569,11 @@ void work_on_weights(bool &gradient_pass, regressor &reg, string &final_regresso
 				"","",new_step/step_size,
 				new_step,
 				net_time/1000.);
-			predictions.erase();
-			update_weight(final_regressor_name, reg, -step_size+new_step, current_pass);		     		      			
-			step_size = new_step;
-			zero_derivative(reg);
-			loss_sum = 0.;
+		      predictions.erase();
+		      update_weight(final_regressor_name, reg, -step_size+new_step, current_pass);		     		      			
+		      step_size = new_step;
+		      zero_derivative(reg);
+		      loss_sum = 0.;
 		    }
 
   /********************************************************************/

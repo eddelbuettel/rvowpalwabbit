@@ -3,7 +3,7 @@ Title: R Interface to the Vowpal Wabbit
 Version: 0.0.13
 Date: 2019-02-21
 Maintainer: Dirk Eddelbuettel <edd@debian.org>
-Author: Dirk Eddelbuettel <edd@debian.org>
+Author: Dirk Eddelbuettel
 Description: The 'Vowpal Wabbit' project is a fast out-of-core learning
  system sponsored by Microsoft Research (having started at Yahoo! Research)
  and written by John Langford along with a number of contributors. This R

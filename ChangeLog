@@ -1,3 +1,23 @@
+2020-06-12  Dirk Eddelbuettel  <edd@debian.org>
+
+	* DESCRIPTION (Version, Date): Release 0.0.14
+
+	* DESCRIPTION (URL): Updated to https://vowpalwabbit.org/
+
+	* src/vw.cc: Replace obsoleted ftime() calls with gettimeofday() at the
+	request of CRAN, thanks to Brian Ripley for the gettimeofday() hint
+	* src/bfgs.cc: Idem
+	* src/accumulate.cc: Idem
+
+	* configure.ac: Renamed from configure.in, also retired long-obsolete Rcpp
+	linker flags check
+	* configure: Regenerated
+
+	* README.md: Add 'last commit' badge, also mention rvw-org/rvw and
+	vowpalwabbit.org
+
+	* .travis.yml: Switch to 'bionic' and R 4.0.0
+
 2019-06-19  Dirk Eddelbuettel  <edd@debian.org>
 
 	* DESCRIPTION (Author): Use name without email as in other packages
@@ -6,7 +26,7 @@
 
 	* DESCRIPTION (Version, Date): Release 0.0.13
 
-	* DESCRIPTION: Set 'StagedInstall: no' to accomidate R 3.6.0
+	* DESCRIPTION: Set 'StagedInstall: no' to accomodate R 3.6.0
 
 2018-09-02  Dirk Eddelbuettel  <edd@debian.org>
 

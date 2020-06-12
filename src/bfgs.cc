@@ -12,7 +12,7 @@ Implementation by Miro Dudik.
 #include <string.h>
 #include <stdio.h>
 #include <assert.h>
-#include <sys/timeb.h>
+#include <sys/time.h>
 #include "parse_example.h"
 #include "constant.h"
 #include "sparse_dense.h"
@@ -55,10 +55,10 @@ namespace BFGS
 
 {
 
-struct timeb t_start, t_end;
+struct timeval t_start, t_end;
 double net_comm_time = 0.0;
 
-struct timeb t_start_global, t_end_global;
+struct timeval t_start_global, t_end_global;
 double net_time;
 
 int mem_stride = 0;
@@ -561,14 +561,14 @@ void work_on_weights(bool &gradient_pass, regressor &reg, string &final_regresso
   /********************************************************************/ 
 		  if (current_pass > 0 && loss_sum > previous_loss_sum)
 		    {// we stepped too far last time, step back
-		      ftime(&t_end_global);
-		      net_time = (int) (1000.0 * (t_end_global.time - t_start_global.time) + (t_end_global.millitm - t_start_global.millitm)); 
+		      gettimeofday(&t_end_global, NULL);
+		      net_time = (int) (1e6 * (t_end_global.tv_sec - t_start_global.tv_sec) + (t_end_global.tv_usec - t_start_global.tv_usec));
 		      if (!global.quiet)
 			//fprintf(stderr, "%-10s\t%-10s\t(revise x %.1f)\t%-10e\t%-.3f\n",
 			REprintf("%-10s\t%-10s\t(revise x %.1f)\t%-10e\t%-.3f\n",
 				"","",new_step/step_size,
 				new_step,
-				net_time/1000.);
+				net_time/1e6);
 		      predictions.erase();
 		      update_weight(final_regressor_name, reg, -step_size+new_step, current_pass);		     		      			
 		      step_size = new_step;
@@ -594,11 +594,11 @@ void work_on_weights(bool &gradient_pass, regressor &reg, string &final_regresso
 		      else {
 			float d_mag = direction_magnitude(reg);
 			step_size = 1.0;
-			ftime(&t_end_global);
-			net_time = (int) (1000.0 * (t_end_global.time - t_start_global.time) + (t_end_global.millitm - t_start_global.millitm)); 
+			gettimeofday(&t_end_global, NULL);
+			net_time = (int) (1e6 * (t_end_global.tv_sec - t_start_global.tv_sec) + (t_end_global.tv_usec - t_start_global.tv_usec));
 			if (!global.quiet)
 			  //fprintf(stderr, "%-10s\t%-10e\t%-10e\t%-10.3f\n", "", d_mag, step_size, (net_time/1000.));
-			  REprintf("%-10s\t%-10e\t%-10e\t%-10.3f\n", "", d_mag, step_size, (net_time/1000.));
+			  REprintf("%-10s\t%-10e\t%-10e\t%-10.3f\n", "", d_mag, step_size, (net_time/1e6));
 			predictions.erase();
 			update_weight(final_regressor_name, reg, step_size, current_pass);		     		      
 		      }
@@ -625,11 +625,11 @@ void work_on_weights(bool &gradient_pass, regressor &reg, string &final_regresso
 
 		  predictions.erase();
 		  update_weight(final_regressor_name ,reg,step_size, current_pass);
-		  ftime(&t_end_global);
-		  net_time = (int) (1000.0 * (t_end_global.time - t_start_global.time) + (t_end_global.millitm - t_start_global.millitm)); 
+		  gettimeofday(&t_end_global, NULL);
+		  net_time = (int) (1e6 * (t_end_global.tv_sec - t_start_global.tv_sec) + (t_end_global.tv_usec - t_start_global.tv_usec));
 		  if (!global.quiet)
 		    //fprintf(stderr, "%-e\t%-e\t%-e\t%-.3f\n", curvature / importance_weight_sum, d_mag, step_size,(net_time/1000.));
-		    REprintf("%-e\t%-e\t%-e\t%-.3f\n", curvature / importance_weight_sum, d_mag, step_size,(net_time/1000.));
+		    REprintf("%-e\t%-e\t%-e\t%-.3f\n", curvature / importance_weight_sum, d_mag, step_size,(net_time/1e6));
 		  gradient_pass = true;
 		}//now start computing derivatives.
 }
@@ -666,7 +666,7 @@ void setup_bfgs(gd_thread_params& t)
     }
 
   net_time = 0.0;
-  ftime(&t_start_global);
+  gettimeofday(&t_start_global, NULL);
   
   if (!global.quiet)
     {
@@ -799,12 +799,12 @@ void setup_bfgs(gd_thread_params& t)
 	accumulate(global.span_server, reg, 3); //Accumulate preconditioner
       preconditioner_to_regularizer(reg,global.regularization);
     }
-  ftime(&t_end_global);
-  net_time = (int) (1000.0 * (t_end_global.time - t_start_global.time) + (t_end_global.millitm - t_start_global.millitm)); 
+  gettimeofday(&t_end_global, NULL);
+  net_time = (int) (1e6 * (t_end_global.tv_sec - t_start_global.tv_sec) + (t_end_global.tv_usec - t_start_global.tv_usec));
   if (!global.quiet)
     {
-      VWCOUT<<"Net time spent in communication = "<<get_comm_time()/(float)1000<<" seconds\n";
-      VWCOUT<<"Net time spent = "<<(float)net_time/(float)1000<<" seconds\n";
+      VWCOUT<<"Net time spent in communication = "<<get_comm_time()/(float)1e6<<" seconds\n";
+      VWCOUT<<"Net time spent = "<<(float)net_time/(float)1e6<<" seconds\n";
     }
 
   if (global.local_prediction > 0)

@@ -9,7 +9,7 @@ Alekh Agarwal and John Langford, with help Olivier Chapelle.
  */
 
 #include <iostream>
-#include <sys/timeb.h>
+#include <sys/time.h>
 #include <cmath>
 #include <stdint.h>
 #include "accumulate.h"
@@ -20,11 +20,11 @@ Alekh Agarwal and John Langford, with help Olivier Chapelle.
    
 using namespace std;
 
-struct timeb t_start, t_end;
+struct timeval t_start, t_end;
 double net_comm_time = 0.;
 
 void accumulate(string master_location, regressor& reg, size_t o) {
-  ftime(&t_start);
+  gettimeofday(&t_start, NULL);
   uint32_t length = 1 << global.num_bits; //This is size of gradient
   size_t stride = global.stride;
   float* local_grad = new float[length];
@@ -40,16 +40,16 @@ void accumulate(string master_location, regressor& reg, size_t o) {
       weights[stride*i+o] = local_grad[i];
     }
   delete[] local_grad;
-  ftime(&t_end);
-  net_comm_time += (int) (1000.0 * (t_end.time - t_start.time) + (t_end.millitm - t_start.millitm)); 
+  gettimeofday(&t_end, NULL);
+  net_comm_time += (int) (1e6 * (t_end.tv_sec - t_start.tv_sec) + (t_end.tv_usec - t_start.tv_usec));
 }
 
 float accumulate_scalar(string master_location, float local_sum) {
-  ftime(&t_start);
+  gettimeofday(&t_start, NULL);
   float temp = local_sum;
   all_reduce((char*)&temp, sizeof(float), master_location, global.unique_id, global.total, global.node);
-  ftime(&t_end);
-  net_comm_time += (int) (1000.0 * (t_end.time - t_start.time) + (t_end.millitm - t_start.millitm)); 
+  gettimeofday(&t_end, NULL);
+  net_comm_time += (int) (1e6 * (t_end.tv_sec - t_start.tv_sec) + (t_end.tv_usec - t_start.tv_usec));
   return temp;
 }
 
@@ -58,7 +58,7 @@ void accumulate_avg(string master_location, regressor& reg, size_t o) {
   size_t stride = global.stride;
   float* local_grad = new float[length];
   weight* weights = reg.weight_vectors[0];
-  ftime(&t_start);
+  gettimeofday(&t_start, NULL);
   float numnodes = 1.;
   all_reduce((char*)&numnodes, sizeof(float), master_location, global.unique_id, global.total, global.node);
   for(uint32_t i = 0;i < length;i++) 
@@ -71,8 +71,8 @@ void accumulate_avg(string master_location, regressor& reg, size_t o) {
     {
       weights[stride*i+o] = local_grad[i]/numnodes;
     }
-  ftime(&t_end);
-  net_comm_time += (int) (1000.0 * (t_end.time - t_start.time) + (t_end.millitm - t_start.millitm)); 
+  gettimeofday(&t_end, NULL);
+  net_comm_time += (int) (1e6 * (t_end.tv_sec - t_start.tv_sec) + (t_end.tv_usec - t_start.tv_usec));
   delete[] local_grad;
 }
 
@@ -100,7 +100,7 @@ void accumulate_weighted_avg(string master_location, regressor& reg) {
   weight* weights = reg.weight_vectors[0];
   float* local_weights = new float[length];
 
-  ftime(&t_start);
+  gettimeofday(&t_start, NULL);
   for(uint32_t i = 0;i < length;i++) 
     local_weights[i] = sqrt(weights[stride*i+1]*weights[stride*i+1]-1);
   
@@ -117,8 +117,8 @@ void accumulate_weighted_avg(string master_location, regressor& reg) {
 
   all_reduce((char*)weights, 2*length*sizeof(float), master_location, global.unique_id, global.total, global.node);
 
-  ftime(&t_end);
-  net_comm_time += (int) (1000.0 * (t_end.time - t_start.time) + (t_end.millitm - t_start.millitm)); 
+  gettimeofday(&t_end, NULL);
+  net_comm_time += (int) (1e6 * (t_end.tv_sec - t_start.tv_sec) + (t_end.tv_usec - t_start.tv_usec));
   delete[] local_weights;
 }
 

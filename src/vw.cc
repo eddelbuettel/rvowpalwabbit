@@ -12,7 +12,7 @@ embodied in the content of this file are licensed under the BSD
 #include <time.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
-#include <sys/timeb.h>
+#include <sys/time.h>
 #include "parse_regressor.h"
 #include "parse_example.h"
 #include "parse_args.h"
@@ -46,8 +46,8 @@ gd_vars* vw(int argc, char *argv[])
   po::variables_map vm = parse_args(argc, argv, desc, *vars, 
 				    regressor1, p, 
 				    final_regressor_name);
-  struct timeb t_start, t_end;
-  ftime(&t_start);
+  struct timeval t_start, t_end;
+  gettimeofday(&t_start, NULL);
   
   if (!global.quiet && !global.bfgs)
     {
@@ -110,9 +110,9 @@ gd_vars* vw(int argc, char *argv[])
   finalize_regressor(final_regressor_name,t.reg);
   finalize_source(p);
   free(p);
-  ftime(&t_end);
-  double net_time = (int) (1000.0 * (t_end.time - t_start.time) + (t_end.millitm - t_start.millitm)); 
+  gettimeofday(&t_end, NULL);
+  double net_time = (int) (1e6 * (t_end.tv_sec - t_start.tv_sec) + (t_end.tv_usec - t_start.tv_usec));
   if(!global.quiet && global.span_server != "")
-    VWCOUT<<"Net time taken by process = "<<net_time/(double)(1000)<<" seconds\n";
+    VWCOUT<<"Net time taken by process = "<<net_time/1e6<<" seconds\n";
   return vars;
 }

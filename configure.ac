@@ -9,7 +9,7 @@
 AC_PREREQ(2.50)
 
 # Process this file with autoconf to produce a configure script.
-AC_INIT(RVowpalWabbit, 0.0.14)
+AC_INIT([RVowpalWabbit], [0.0.14])
 
 # We are using C++ (commented out now as also done below by Boost tests)
 # edd 06 Jan 2014: turned off as it gets confusedby the borked clang under Ubuntu
@@ -17,7 +17,7 @@ AC_INIT(RVowpalWabbit, 0.0.14)
 AC_REQUIRE_CPP
 
 # Check of R
-AC_DEFUN(AC_PROG_R, [AC_CHECK_PROG(R,R,yes)])
+AC_DEFUN([AC_PROG_R], [AC_CHECK_PROG(R,R,yes)])
 AC_PROG_R
 
 # Next segment by Kurt, and once contributed to RQuantLib

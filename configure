@@ -2927,7 +2927,6 @@ CXXFLAGS=`"${R_HOME}/bin/R" CMD config CXXFLAGS`
 #   and this notice are preserved. This file is offered as-is, without any
 #   warranty.
 
-#serial 22
 
 
 
@@ -2962,7 +2961,6 @@ CXXFLAGS=`"${R_HOME}/bin/R" CMD config CXXFLAGS`
 #   and this notice are preserved. This file is offered as-is, without any
 #   warranty.
 
-#serial 22
 
 
 

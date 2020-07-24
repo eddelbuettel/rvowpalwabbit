@@ -81,7 +81,7 @@ CXXFLAGS=`"${R_HOME}/bin/R" CMD config CXXFLAGS`
 #   and this notice are preserved. This file is offered as-is, without any
 #   warranty.
 
-#serial 22
+dnl #serial 22
 
 AC_DEFUN([AX_BOOST_BASE],
 [
@@ -357,7 +357,7 @@ fi
 #   and this notice are preserved. This file is offered as-is, without any
 #   warranty.
 
-#serial 22
+dnl #serial 22
 
 AC_DEFUN([AX_BOOST_PROGRAM_OPTIONS],
 [
@@ -479,7 +479,7 @@ AC_SUBST([LDFLAGS],["${BOOST_LDFLAGS} ${BOOST_PROGRAM_OPTIONS_LIB} ${LDFLAGS}"])
 
 AC_SUBST(CXXFLAGS)
 AC_SUBST(LDFLAGS)
-AC_OUTPUT(src/Makevars)
+AC_OUTPUT([src/Makevars])
 echo "Completed configuration and ready to build."
 
 

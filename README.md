@@ -1,9 +1,9 @@
-## RVowpalWabbit: R interface to [Vowpal Wabbit](http://hunch.net/~vw/)
+## RVowpalWabbit: R interface to Vowpal Wabbit
 
 [![Build Status](https://travis-ci.org/eddelbuettel/rvowpalwabbit.svg)](https://travis-ci.org/eddelbuettel/rvowpalwabbit) 
-[![License](http://img.shields.io/badge/license-GPL%20%28%3E=%202%29-brightgreen.svg?style=flat)](http://www.gnu.org/licenses/gpl-2.0.html) 
-[![CRAN](http://www.r-pkg.org/badges/version/RVowpalWabbit)](https://cran.r-project.org/package=RVowpalWabbit) 
-[![Downloads](http://cranlogs.r-pkg.org/badges/RVowpalWabbit?color=brightgreen)](http://www.r-pkg.org/pkg/RVowpalWabbit)
+[![License](https://img.shields.io/badge/license-GPL%20%28%3E=%202%29-brightgreen.svg?style=flat)](https://www.gnu.org/licenses/gpl-2.0.html) 
+[![CRAN](https://www.r-pkg.org/badges/version/RVowpalWabbit)](https://cran.r-project.org/package=RVowpalWabbit) 
+[![Downloads](https://cranlogs.r-pkg.org/badges/RVowpalWabbit?color=brightgreen)](https://www.r-pkg.org/pkg/RVowpalWabbit)
 [![Last Commit](https://img.shields.io/github/last-commit/eddelbuettel/rvowpalwabbit)](https://github.com/eddelbuettel/rvowpalwabbit)
 
 ### About

@@ -13,7 +13,7 @@
 
 using namespace std;
 
-pthread_t* thread;
+extern pthread_t* threads;
 size_t d_1;
 size_t d_2;
 v_array<v_array<io_buf *> > bufs;
@@ -162,13 +162,13 @@ void* send_thread(void*)
 
 void setup_send()
 {
-  thread = (pthread_t*)calloc(1,sizeof(pthread_t));
+  threads = (pthread_t*)calloc(1,sizeof(pthread_t));
   
-  pthread_create(thread, NULL, send_thread, NULL);
+  pthread_create(threads, NULL, send_thread, NULL);
 }
 
 void destroy_send()
 {
-  pthread_join(*thread, NULL);
-  free(thread);
+  pthread_join(*threads, NULL);
+  free(threads);
 }

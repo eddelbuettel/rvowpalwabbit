@@ -1,3 +1,8 @@
+2020-07-27  Dirk Eddelbuettel  <edd@debian.org>
+
+	* src/sender.cc: Renamed variable from 'thread' to 'threads' to not
+	confuse poor Solaris, and make it 'extern' while we are at it
+
 2020-06-13  Dirk Eddelbuettel  <edd@debian.org>
 
 	* DESCRIPTION (Version, Date): Release 0.0.14

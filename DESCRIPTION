@@ -1,7 +1,7 @@
 Package: RVowpalWabbit
 Title: R Interface to the Vowpal Wabbit
-Version: 0.0.14
-Date: 2020-06-13
+Version: 0.0.15
+Date: 2020-07-27
 Maintainer: Dirk Eddelbuettel <edd@debian.org>
 Author: Dirk Eddelbuettel
 Description: The 'Vowpal Wabbit' project is a fast out-of-core learning
@@ -17,7 +17,7 @@ Description: The 'Vowpal Wabbit' project is a fast out-of-core learning
 Depends: R (>= 2.12.0)
 Imports: Rcpp
 LinkingTo: Rcpp
-SystemRequirements: The Boost 'program_options' library (http://boost.org) is required.
+SystemRequirements: The Boost 'program_options' library <https://boost.org> is required.
 OS_type: unix
 StagedInstall: no
 License: GPL (>= 2)

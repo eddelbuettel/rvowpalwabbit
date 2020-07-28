@@ -9,7 +9,7 @@
 AC_PREREQ(2.50)
 
 # Process this file with autoconf to produce a configure script.
-AC_INIT([RVowpalWabbit], [0.0.14])
+AC_INIT([RVowpalWabbit], m4_esyscmd_s([awk -e '/^Version:/ {print $2}' DESCRIPTION]))
 
 # We are using C++ (commented out now as also done below by Boost tests)
 # edd 06 Jan 2014: turned off as it gets confusedby the borked clang under Ubuntu

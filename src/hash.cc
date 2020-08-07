@@ -17,6 +17,7 @@
 //
 #include <stdint.h>	/* defines uint32_t etc */
 #include <sys/types.h>	/* defines size_t */
+#include <string.h>     /* for memcpy */
 
 #define MIX(h,k,m) { k *= m; k ^= k >> r; k *= m; h *= m; h ^= k; }
 
@@ -37,7 +38,7 @@ uint32_t uniform_hash( const void *key, size_t len, uint32_t seed)
     const unsigned char * data = (const unsigned char *)key;
 
     while (len >= 4) {
-	unsigned int k = *(unsigned int *)data;
+        unsigned int k; memcpy((void*) &k, (const void*) data, sizeof(unsigned int));//  //unsigned int k = *(unsigned int *)data;
 
 	k *= m;
 	k ^= k >> r;

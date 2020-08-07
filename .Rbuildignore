@@ -1,3 +1,8 @@
 .travis.yml
 ^.*\.tar\.gz$
 ^local
+tests/test5.r
+tests/test6.r
+tests/test7.r
+tests/test8.r
+inst/test/train-sets/0002.dat

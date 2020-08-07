@@ -35,8 +35,8 @@ size_t read_cached_tag(io_buf& cache, example* ae)
   size_t tag_size;
   if (buf_read(cache, c, sizeof(tag_size)) < sizeof(tag_size))
     return 0;
-  tag_size = *(size_t*)c;
-  c += sizeof(tag_size);  
+  memcpy((void*) &tag_size, (const void*)c, sizeof(size_t));  //tag_size = *(size_t*)c;
+  c += sizeof(tag_size);
   cache.set(c);
   if (buf_read(cache, c, tag_size) < tag_size) 
     return 0;
@@ -86,7 +86,8 @@ int read_cached_features(parser* p, void* ec)
       push(ae->indices, (size_t)index);
       v_array<feature>* ours = ae->atomics+index;
       float* our_sum_feat_sq = ae->sum_feat_sq+index;
-      size_t storage = *(size_t *)c;
+      size_t storage;
+      memcpy((void*) &storage, (const void*) c, sizeof(size_t));//  size_t storage = *(size_t *)c;
       c += sizeof(size_t);
       p->input->set(c);
       total += storage; 
@@ -139,7 +140,7 @@ char* run_len_encode(char *p, size_t i)
   return p;
 }
 
-inline uint32_t ZigZagEncode(int32_t n) { 
+inline uint32_t ZigZagEncode(uint32_t n) {
   uint32_t ret = (n << 1) ^ (n >> 31);
   return ret;
 }
@@ -173,7 +174,7 @@ void output_features(io_buf& cache, unsigned char index, feature* begin, feature
   
   for (feature* i = begin; i != end; i++)
     {
-      int32_t s_diff = (i->weight_index - last);
+      uint32_t s_diff = (i->weight_index - last);
       size_t diff = ZigZagEncode(s_diff) << 2;
       last = i->weight_index;
       if (i->x == 1.) 
@@ -182,21 +183,21 @@ void output_features(io_buf& cache, unsigned char index, feature* begin, feature
 	c = run_len_encode(c, diff | neg_1);
       else {
 	c = run_len_encode(c, diff | general);
-	*(float *)c = i->x;
+	memcpy((void*) c, (const void*) &(i->x), sizeof(float));//  *(float *)c = i->x;
 	c += sizeof(float);
       }
     }
   cache.set(c);
-  *(size_t*)storage_size_loc = c - storage_size_loc - sizeof(size_t);  
+  size_t tt = c - storage_size_loc - sizeof(size_t); memcpy((void*) &storage_size_loc, (const void*) &tt, sizeof(size_t));//  *(size_t*)storage_size_loc = c - storage_size_loc - sizeof(size_t);
 }
 
 void cache_tag(io_buf& cache, v_array<char> tag)
 {
   char *c;
   buf_write(cache, c, sizeof(size_t)+tag.index());
-  *(size_t*)c = tag.index();
+  size_t tt = tag.index(); memcpy((void*) c, (const void*) &tt, sizeof(size_t));//  *(size_t*)c = tag.index();
   c += sizeof(size_t);
-  memcpy(c, tag.begin, tag.index());
+  if (tag.begin != nullptr) memcpy((void*) c, (const void*) tag.begin, tag.index());
   c += tag.index();
   cache.set(c);
 }

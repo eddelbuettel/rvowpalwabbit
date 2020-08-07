@@ -1,7 +1,19 @@
-2020-07-27  Dirk Eddelbuettel  <edd@debian.org>
+2020-08-03  Dirk Eddelbuettel  <edd@debian.org>
 
 	* DESCRIPTION (Version, Date): Release 0.0.15
 	* configure: Idem
+
+	* src/cache.cc: Converted several casts to memcpy() call to appease ubsan
+	* src/hasg.cc: Idem
+	* src/simple_label.cc: Idem
+
+	* .Rbuildignore: Skip inst/test/train-sets/0002.dat for smaller package
+	* test/test5.r: Idem
+	* test/test6.r: Idem
+	* test/test7.r: Idem
+	* test/test8.r: Idem
+
+2020-07-27  Dirk Eddelbuettel  <edd@debian.org>
 
 	* src/sender.cc: Renamed variable from 'thread' to 'threads' to not
 	confuse poor Solaris, and make it 'extern' while we are at it

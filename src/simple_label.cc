@@ -11,11 +11,11 @@ using namespace std;
 
 char* bufread_simple_label(label_data* ld, char* c)
 {
-  ld->label = *(float *)c;
+  memcpy((void*) &ld->label, (const void*) c, sizeof(float));//  ld->label = *(float *)c;
   c += sizeof(ld->label);
-  ld->weight = *(float *)c;
+  memcpy((void*) &ld->weight, (const void*) c, sizeof(float));//  ld->weight = *(float *)c;
   c += sizeof(ld->weight);
-  ld->initial = *(float *)c;
+  memcpy((void*) &ld->initial, (const void*) c, sizeof(float));//  ld->initial = *(float *)c;
   c += sizeof(ld->initial);
   return c;
 }
@@ -46,11 +46,11 @@ float get_initial(void* v)
 
 char* bufcache_simple_label(label_data* ld, char* c)
 {
-  *(float *)c = ld->label;
+  memcpy((void*) c, (const void*) &ld->label, sizeof(float));//  *(float *)c = ld->label;
   c += sizeof(ld->label);
-  *(float *)c = ld->weight;
+  memcpy((void*) c, (const void*) &ld->weight, sizeof(float));//  *(float *)c = ld->weight;
   c += sizeof(ld->weight);
-  *(float *)c = ld->initial;
+  memcpy((void*) c, (const void*) &ld->initial, sizeof(float));//  *(float *)c = ld->initial;
   c += sizeof(ld->initial);
   return c;
 }

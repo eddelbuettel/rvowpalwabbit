@@ -21,5 +21,5 @@ SystemRequirements: The Boost 'program_options' library <https://boost.org> is r
 OS_type: unix
 StagedInstall: no
 License: GPL (>= 2)
-URL: https://vowpalwabbit.org/
+URL: https://vowpalwabbit.org/, https://github.com/eddelbuettel/rvowpalwabbit
 BugReports: https://github.com/eddelbuettel/rvowpalwabbit/issues

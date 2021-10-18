@@ -47,7 +47,7 @@ vw(args, quiet=TRUE)
   directory to the resulting path.
 }
 \references{
-  \url{https://github.com/JohnLangford/vowpal_wabbit/wiki}
+  \url{https://github.com/VowpalWabbit/vowpal_wabbit/wiki}
 }
 \author{Dirk Eddelbuettel \email{edd@debian.org} for the \R interface;
   John Langford along with Daniel Hsu, Nikos Karampatziakis, Olivier

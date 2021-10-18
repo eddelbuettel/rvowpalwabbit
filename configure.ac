@@ -5,11 +5,11 @@
 # Borrowing code from the configure.in script in RQuantLib
 # Also borrowing two Boost macros from the Autoconf archive
 
-# require at least autoconf 2.50
-AC_PREREQ(2.50)
+# require at least autoconf 2.69
+AC_PREREQ([2.69])
 
 # Process this file with autoconf to produce a configure script.
-AC_INIT([RVowpalWabbit], m4_esyscmd_s([awk -e '/^Version:/ {print $2}' DESCRIPTION]))
+AC_INIT([RVowpalWabbit],[0.0.16],[edd@debian.org])
 
 # We are using C++ (commented out now as also done below by Boost tests)
 # edd 06 Jan 2014: turned off as it gets confusedby the borked clang under Ubuntu
@@ -479,7 +479,8 @@ AC_SUBST([LDFLAGS],["${BOOST_LDFLAGS} ${BOOST_PROGRAM_OPTIONS_LIB} ${LDFLAGS}"])
 
 AC_SUBST(CXXFLAGS)
 AC_SUBST(LDFLAGS)
-AC_OUTPUT([src/Makevars])
+AC_CONFIG_FILES([src/Makevars])
+AC_OUTPUT
 echo "Completed configuration and ready to build."
 
 

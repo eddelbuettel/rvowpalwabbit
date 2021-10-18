@@ -1,3 +1,10 @@
+2021-10-11  Dirk Eddelbuettel  <edd@debian.org>
+
+	* DESCRIPTION (Version, Date): Release 0.0.16
+	* configure.ac: Idem
+
+	* src/v_array.h (push_many): Protect one null pointer operation
+
 2021-10-09  Dirk Eddelbuettel  <edd@debian.org>
 
 	* configure.ac: Updated via 'autoupdate' and 'autoreconf

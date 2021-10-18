@@ -18,7 +18,7 @@ template<class T> class v_array{
   T pop() { return *(--end);}
   bool empty() { return begin == end;}
   void decr() { end--;}
-  v_array() { begin= NULL; end = NULL; end_array=NULL;}
+  v_array() { begin = nullptr; end = nullptr; end_array = nullptr; }
   T& operator[](unsigned int i) { return begin[i]; }
   unsigned int index(){return end-begin;}
   void erase() { end = begin;}
@@ -44,7 +44,7 @@ inline size_t max(size_t a, size_t b)
 
 template<class T> void push_many(v_array<T>& v, const T* begin, size_t num)
 {
-  if(v.end+num >= v.end_array)
+  if(v.end == nullptr || v.end+num >= v.end_array)
     {
       size_t length = v.end - v.begin;
       size_t new_length = max(2 * (size_t)(v.end_array - v.begin) + 3, 

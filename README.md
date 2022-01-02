@@ -1,6 +1,5 @@
 ## RVowpalWabbit: R interface to Vowpal Wabbit
 
-[![Build Status](https://travis-ci.org/eddelbuettel/rvowpalwabbit.svg)](https://travis-ci.org/eddelbuettel/rvowpalwabbit) 
 [![CI](https://github.com/eddelbuettel/rvowpalwabbit/workflows/ci/badge.svg)](https://github.com/eddelbuettel/rvowpalwabbit/actions?query=workflow%3Aci)
 [![License](https://img.shields.io/badge/license-GPL%20%28%3E=%202%29-brightgreen.svg?style=flat)](https://www.gnu.org/licenses/gpl-2.0.html) 
 [![CRAN](https://www.r-pkg.org/badges/version/RVowpalWabbit)](https://cran.r-project.org/package=RVowpalWabbit) 

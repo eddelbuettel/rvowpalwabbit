@@ -60,10 +60,12 @@
 ##            "-d", "/tmp/vw/test/train-sets/0002.dat",
 ##            "-p", "/tmp/vw/test/0002c.predict")
 
-.test3 <- c("-t", system.file(package="RVowpalWabbit", "test/train-sets/0002.dat"),
-            "-f", system.file(package="RVowpalWabbit", "test/models/0002.model"))
+.test3 <- function() {
+    c("-t", system.file(package="RVowpalWabbit", "test/train-sets/0002.dat"),
+      "-f", system.file(package="RVowpalWabbit", "test/models/0002.model"))
+}
 
-vw <- function(args=.test3, quiet=TRUE) {
+vw <- function(args=.test3(), quiet=TRUE) {
     args <- c("Rvw", args)              # provide an argv[0] for program_options
     if (quiet) args <- c(args, "--quiet")
     Rvw(args)

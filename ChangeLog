@@ -1,3 +1,9 @@
+2022-10-03  Dirk Eddelbuettel  <edd@debian.org>
+
+	* R/vw.R (vw): Get data location via function and not a constant
+	which serializes data path -- thanks to Tomas Kalibera for the hint
+	* DESCRIPTION (StagedInstall): No longer needed
+
 2022-01-01  Dirk Eddelbuettel  <edd@debian.org>
 
 	* README.md: Remove unused continuous integration artifact and badge

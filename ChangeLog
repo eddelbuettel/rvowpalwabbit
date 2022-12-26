@@ -3,6 +3,8 @@
 	* src/global_data.cc: Switch multiple sprintf() to snprintf()
 	* src/parse_regressor.cc: Idem
 	* src/gd.cc: Switch once to snprintf() (and once to strncpy())
+	* src/parser.cc: No longer permit 'multisource' or 'global.daemon'
+	options and hence no longer enter daemon mode
 
 2022-12-01  Dirk Eddelbuettel  <edd@debian.org>
 

@@ -17,6 +17,7 @@ embodied in the content of this file are licensed under the BSD
 #include <errno.h>
 #include <stdio.h>
 #include <assert.h>
+#include <spawn.h>              // for posix_spawn
 namespace po = boost::program_options;
 
 #include "parser.h"
@@ -266,7 +267,7 @@ void parse_source_args(po::variables_map& vm, parser* par, bool quiet, size_t pa
   if(vm.count("hash")) 
     hash_function = vm["hash"].as<string>();
 
-  if (vm.count("multisource") || global.daemon)
+  if (false && (vm.count("multisource") || global.daemon))
     {
       par->bound_sock = socket(PF_INET, SOCK_STREAM, 0);
       if (par->bound_sock < 0) {
@@ -299,10 +300,10 @@ void parse_source_args(po::variables_map& vm, parser* par, bool quiet, size_t pa
       listen(par->bound_sock, source_count);
 
       // background process
-      if (daemon(1,1))
-	{
-	  Rf_error("failure to background!");
-	}
+      //if (daemon(1,1))
+      //	{
+      //  Rf_error("failure to background!");
+      //}
       // write pid file
       if (vm.count("pid_file"))
 	{

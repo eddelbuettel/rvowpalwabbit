@@ -1,3 +1,9 @@
+2022-12-26  Dirk Eddelbuettel  <edd@debian.org>
+
+	* src/global_data.cc: Switch multiple sprintf() to snprintf()
+	* src/parse_regressor.cc: Idem
+	* src/gd.cc: Switch once to snprintf() (and once to strncpy())
+
 2022-12-01  Dirk Eddelbuettel  <edd@debian.org>
 
 	* .github/workflows/ci.yaml (jobs): Update to actions/checkout@v3

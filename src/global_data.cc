@@ -31,7 +31,7 @@ void print_result(int f, float res, float weight, v_array<char> tag)
   if (f >= 0)
     {
       char temp[30];
-      int num = sprintf(temp, "%f", res);
+      int num = snprintf(temp, 30, "%f", res);
       ssize_t t;
       t = write(f, temp, num);
       if (t != num) 
@@ -47,7 +47,7 @@ void print_result(int f, float res, float weight, v_array<char> tag)
       }
       if(global.active && weight >= 0)
 	{
-	  num = sprintf(temp, " %f", weight);
+	  num = snprintf(temp, 30, " %f", weight);
 	  t = write(f, temp, num);
 	  if (t != num)
 	    VWCOUT << "write error" << endl;
@@ -68,7 +68,7 @@ void print_lda_result(int f, float* res, float weight, v_array<char> tag)
       int num;
       for (size_t k = 0; k < global.lda; k++)
 	{
-	  num = sprintf(temp, "%f ", res[k]);
+	  num = snprintf(temp, 30, "%f ", res[k]);
 	  t = write(f, temp, num);
 	  if (t != num)
 	    VWCOUT << "write error" << endl;
@@ -84,7 +84,7 @@ void print_lda_result(int f, float* res, float weight, v_array<char> tag)
       }
       if(global.active && weight >= 0)
 	{
-	  num = sprintf(temp, " %f", weight);
+	  num = snprintf(temp, 30, " %f", weight);
 	  t = write(f, temp, num);
 	  if (t != num)
 	    VWCOUT << "write error" << endl;

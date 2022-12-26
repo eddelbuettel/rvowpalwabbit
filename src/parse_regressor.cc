@@ -298,7 +298,7 @@ void save_predictor(string reg_name, size_t current_pass)
 {
    if(global.save_per_pass) {
     char* filename = new char[reg_name.length()+4];
-    sprintf(filename,"%s.%lu",reg_name.c_str(),(long unsigned)current_pass);
+    snprintf(filename,reg_name.length()+4,"%s.%lu",reg_name.c_str(),(long unsigned)current_pass);
     dump_regressor(string(filename), *(global.reg));
     delete[] filename;
   }
@@ -341,28 +341,28 @@ void dump_regressor(string reg_name, regressor &r, bool as_text, bool reg_vector
   else {
     char buff[512];
     int len;
-    len = sprintf(buff, "Version %s\n", version.c_str());
+    len = snprintf(buff, 512, "Version %s\n", version.c_str());
     io_temp.write_file(f, buff, len);
-    len = sprintf(buff, "Min label:%f max label:%f\n", global.min_label, global.max_label);
+    len = snprintf(buff, 512, "Min label:%f max label:%f\n", global.min_label, global.max_label);
     io_temp.write_file(f, buff, len);
-    len = sprintf(buff, "bits:%d thread_bits:%d\n", (int)global.num_bits, (int)global.thread_bits);
+    len = snprintf(buff, 512, "bits:%d thread_bits:%d\n", (int)global.num_bits, (int)global.thread_bits);
     io_temp.write_file(f, buff, len);
     for (vector<string>::iterator i = global.pairs.begin(); i != global.pairs.end();i++) {
-      len = sprintf(buff, "%s ", i->c_str());
+      len = snprintf(buff, 512, "%s ", i->c_str());
       io_temp.write_file(f, buff, len);
     }
     if (global.pairs.size() > 0)
       {
-	len = sprintf(buff, "\n");
+	len = snprintf(buff, 512, "\n");
 	io_temp.write_file(f, buff, len);
       }
-    len = sprintf(buff, "ngram:%d skips:%d\nindex:weight pairs:\n", (int)global.ngram, (int)global.skips);
+    len = snprintf(buff, 512, "ngram:%d skips:%d\nindex:weight pairs:\n", (int)global.ngram, (int)global.skips);
     io_temp.write_file(f, buff, len);
 
-    len = sprintf(buff, "rank:%d\n", (int)global.rank);
+    len = snprintf(buff, 512, "rank:%d\n", (int)global.rank);
     io_temp.write_file(f, buff, len);
 
-    len = sprintf(buff, "lda:%d\n", (int)global.lda);
+    len = snprintf(buff, 512, "lda:%d\n", (int)global.lda);
     io_temp.write_file(f, buff, len);
   }
   
@@ -389,7 +389,7 @@ void dump_regressor(string reg_name, regressor &r, bool as_text, bool reg_vector
                 io_temp.write_file(f,(char *)&v, sizeof (v));
               } else {
                 char buff[512];
-                int len = sprintf(buff, "%d:%f\n", i, v);
+                int len = snprintf(buff, 512, "%d:%f\n", i, v);
                 io_temp.write_file(f, buff, len);
               }
 	    }
@@ -413,9 +413,9 @@ void dump_regressor(string reg_name, regressor &r, bool as_text, bool reg_vector
 		int len;
 
 		if (global.rank != 0)
-		  len = sprintf(buff, "%f ", v);
+		  len = snprintf(buff, 512, "%f ", v);
 		else
-		  len = sprintf(buff, "%f ", v + global.lda_rho);
+		  len = snprintf(buff, 512, "%f ", v + global.lda_rho);
 
                 io_temp.write_file(f, buff, len);
               }

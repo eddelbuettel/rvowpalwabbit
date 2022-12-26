@@ -160,9 +160,9 @@ void print_update(example *ec)
       label_data* ld = (label_data*) ec->ld;
       char label_buf[32];
       if (ld->label == FLT_MAX)
-	strcpy(label_buf," unknown");
+	strncpy(label_buf, " unknown", 32);
       else
-	sprintf(label_buf,"%8.4f",ld->label);
+	snprintf(label_buf, 32, "%8.4f",ld->label);
 
       //fprintf(stderr, "%-10.6f %-10.6f %8ld %8.1f   %s %8.4f %8lu\n",
       REprintf("%-10.6f %-10.6f %8ld %8.1f   %s %8.4f %8lu\n",
